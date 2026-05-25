@@ -1,0 +1,14 @@
+{
+  "name": "recursos-canarias",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Banco de recursos educativos para docentes de Canarias.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

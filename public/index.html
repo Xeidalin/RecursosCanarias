@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recursos Canarias</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="/" aria-label="Recursos Canarias">
+      <span class="logo-flower" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </span>
+      <span>Recursos<br>Canarias</span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navegacion principal">
+      <a class="active" href="/">Inicio</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#materias">Materias</a>
+      <a href="#canarias">Canarias</a>
+      <a href="#docentes">Docentes</a>
+      <a href="#comunidad">Comunidad</a>
+    </nav>
+
+    <div class="header-tools" aria-label="Accesos rapidos">
+      <form class="header-search" action="/buscar.html" method="get" aria-label="Buscar recursos educativos"><input type="search" name="q" placeholder="Buscar"><button type="submit" aria-label="Buscar">⌕</button></form>
+      <button type="button" aria-label="Favoritos">♡</button>
+      <button type="button" aria-label="Perfil">♙</button>
+      <a class="login-button" href="#acceder">Acceder</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <h1 id="hero-title"><span>Recursos educativos</span><span>para enseñar y aprender</span><span>en Canarias</span></h1>
+        <p>Materiales creados para docentes comprometidos con nuestra tierra y nuestra educación.</p>
+      </div>
+      <div class="hero-art" aria-label="Ilustracion de paisaje canario">
+        <img src="/cabecera.png" alt="Imagen de cabecera de Recursos Canarias">
+      </div>
+    </section>
+
+    <section class="resource-types" id="recursos" aria-labelledby="types-title">
+      <h2 id="types-title">Explora por tipo de recurso</h2>
+      <div class="type-grid">
+        <a class="type-card green" href="#recursos"><span>🖼️</span><strong>Imágenes</strong><small>Explorar →</small></a>
+        <a class="type-card blue" href="#recursos"><span>▶️</span><strong>Videos</strong><small>Explorar →</small></a>
+        <a class="type-card orange" href="#recursos"><span>📄</span><strong>Fichas</strong><small>Explorar →</small></a>
+        <a class="type-card red" href="#recursos"><span>📕</span><strong>PDFs</strong><small>Explorar →</small></a>
+        <a class="type-card purple" href="#recursos"><span>🎮</span><strong>Juegos</strong><small>Explorar →</small></a>
+        <a class="type-card teal" href="#recursos"><span>🖥️</span><strong>Presentaciones</strong><small>Explorar →</small></a>
+      </div>
+    </section>
+
+    <section class="content-layout">
+      <aside class="filters" aria-label="Filtros">
+        <div class="filters-head">
+          <h2>Filtros</h2>
+          <span>☷</span>
+        </div>
+
+        <label class="select-label" id="materias">Materia
+          <select>
+            <option>Todas las materias</option>
+            <option>Conocimiento del medio</option>
+            <option>Ciencias sociales</option>
+            <option>Lengua</option>
+          </select>
+        </label>
+
+        <label class="select-label">Tipo de recurso
+          <select>
+            <option>Todos los tipos</option>
+            <option>Imágenes</option>
+            <option>Videos</option>
+            <option>Fichas</option>
+            <option>PDFs</option>
+          </select>
+        </label>
+
+        <label class="select-label">Formato
+          <select>
+            <option>Todos los formatos</option>
+            <option>Editable</option>
+            <option>Descargable</option>
+            <option>Interactivo</option>
+          </select>
+        </label>
+
+        <button class="apply-button" type="button">Aplicar filtros <span>☷</span></button>
+      </aside>
+
+      <div class="sections-stack">
+        <section class="panel" id="canarias" aria-labelledby="canarias-title">
+          <div class="panel-head">
+            <h2 id="canarias-title">Recursos sobre Canarias</h2>
+            <a href="#canarias">Ver todos →</a>
+          </div>
+          <div class="topic-grid">
+            <a class="topic-card" href="#canarias"><img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=700&q=80" alt="Volcanes"><span class="topic-badge">⛰</span><strong>Volcanes</strong><small>128 recursos</small></a>
+            <a class="topic-card" href="#canarias"><img src="https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=700&q=80" alt="Flora y fauna"><span class="topic-badge green">🌿</span><strong>Flora y fauna</strong><small>96 recursos</small></a>
+            <a class="topic-card" href="#canarias"><img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=700&q=80" alt="Tradiciones"><span class="topic-badge red">👥</span><strong>Tradiciones</strong><small>78 recursos</small></a>
+            <a class="topic-card" href="#canarias"><img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=700&q=80" alt="Paisajes"><span class="topic-badge dark">▲</span><strong>Paisajes</strong><small>154 recursos</small></a>
+            <a class="topic-card" href="#canarias"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=700&q=80" alt="Gastronomia"><span class="topic-badge orange">🍴</span><strong>Gastronomía</strong><small>63 recursos</small></a>
+            <a class="topic-card" href="#canarias"><img src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=700&q=80" alt="Historia"><span class="topic-badge brown">🏛</span><strong>Historia</strong><small>112 recursos</small></a>
+          </div>
+        </section>
+
+        <section class="panel" id="docentes" aria-labelledby="featured-title">
+          <div class="panel-head">
+            <h2 id="featured-title">Recursos destacados</h2>
+            <a href="#recursos">Ver todos →</a>
+          </div>
+          <div class="featured-grid">
+            <article class="featured-card"><span class="tag image">Imagen</span><img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=700&q=80" alt="Playa"><div><h3>Playa de Las Canteras</h3><p>Primaria · Conocimiento del medio</p><footer>♡ 1.2k <span>♡ ⤓</span></footer></div></article>
+            <article class="featured-card"><span class="tag sheet">Ficha</span><img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=700&q=80" alt="Ficha escolar"><div><h3>Los volcanes de Canarias</h3><p>Primaria · Ciencias naturales</p><footer>♡ 856 <span>♡ ⤓</span></footer></div></article>
+            <article class="featured-card"><span class="tag video">Video</span><img src="https://images.unsplash.com/photo-1524704796725-9fc3044a58b2?auto=format&fit=crop&w=700&q=80" alt="Tortuga marina"><div><h3>Tortugas en Canarias</h3><p>Primaria · Conocimiento del medio</p><footer>♡ 2.3k <span>♡ ⤓</span></footer></div></article>
+            <article class="featured-card"><span class="tag pdf">PDF</span><img src="https://images.unsplash.com/photo-1599407384144-377311716111?auto=format&fit=crop&w=700&q=80" alt="Flora endemica"><div><h3>Flora endémica de Canarias</h3><p>Secundaria · Biología</p><footer>♡ 732 <span>♡ ⤓</span></footer></div></article>
+            <article class="featured-card"><span class="tag presentation">Presentación</span><img src="https://images.unsplash.com/photo-1579009644994-cbb2b6bf81ed?auto=format&fit=crop&w=700&q=80" alt="Geografia"><div><h3>Geografía de Canarias</h3><p>Primaria · Geografía e Historia</p><footer>♡ 1.1k <span>♡ ⤓</span></footer></div></article>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

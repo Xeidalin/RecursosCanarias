@@ -248,6 +248,64 @@ export const create = mutation({
   },
 });
 
+export const update = mutation({
+  args: {
+    id:          v.id("resources"),
+    slug:        v.optional(v.string()),
+    title:       v.optional(v.string()),
+    kind:        v.optional(KIND_VALUES),
+    isExternal:  v.optional(v.boolean()),
+    sourceUrl:   v.optional(v.string()),
+    fileUrl:     v.optional(v.string()),
+    islands:     v.optional(v.array(v.string())),
+    topics:      v.optional(v.array(v.string())),
+    levels:      v.optional(v.array(v.string())),
+    description: v.optional(v.string()),
+    imageUrl:    v.optional(v.string()),
+    license:     v.optional(v.string()),
+    tags:        v.optional(v.array(v.string())),
+  },
+  handler: async (ctx, args) => {
+    const { id, ...rest } = args;
+    const current = await ctx.db.get(id);
+    if (!current) throw new Error("Recurso no encontrado");
+
+    // Slug uniqueness si cambia
+    if (rest.slug !== undefined && rest.slug.trim() !== current.slug) {
+      const newSlug = rest.slug.trim();
+      const dup = await ctx.db
+        .query("resources")
+        .withIndex("by_slug", (q) => q.eq("slug", newSlug))
+        .unique();
+      if (dup && dup._id !== id) {
+        throw new Error(`Ya existe un recurso con el slug '${newSlug}'`);
+      }
+      rest.slug = newSlug;
+    }
+
+    // Trim de strings opcionales
+    for (const k of ["title", "sourceUrl", "fileUrl", "description", "imageUrl", "license"]) {
+      if (typeof rest[k] === "string") rest[k] = rest[k].trim();
+    }
+
+    await ctx.db.patch(id, rest);
+
+    // Re-sincroniza facets solo si alguna cambia. Si una faceta no se envió,
+    // mantenemos la actual para no borrar junctions por accidente.
+    if (rest.islands || rest.topics || rest.levels) {
+      const next = await ctx.db.get(id);
+      await syncFacets(ctx, id, {
+        islands: next.islands,
+        topics:  next.topics,
+        levels:  next.levels,
+      });
+    }
+
+    const doc = await ctx.db.get(id);
+    return toApi(doc);
+  },
+});
+
 export const remove = mutation({
   args: { id: v.id("resources") },
   handler: async (ctx, { id }) => {

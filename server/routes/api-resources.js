@@ -51,11 +51,11 @@ router.get("/api/resources/filtered", async (req, res) => {
   sendJson(res, 200, result);
 }, { public: true });
 
-// POST /api/resources — creación (admin-only, shape v2)
-// Full CRUD admin UI is built in T15.1; this stub validates required v2 fields.
-router.post("/api/resources", async (req, res) => {
+// POST /api/admin/resources — creación de recurso (admin + CSRF)
+router.post("/api/admin/resources", async (req, res) => {
   try {
-    const body     = await readBody(req);
+    const body = await readBody(req);
+    await resolveStorageId(body);
     const required = ["slug", "title", "kind", "islands", "topics", "levels"];
     const missing  = required.filter((k) => {
       const v = body[k];
@@ -77,6 +77,99 @@ router.post("/api/resources", async (req, res) => {
   } catch (err) {
     const status = err.status || 400;
     sendJson(res, status, { error: err.message || "No se pudo guardar el recurso." });
+  }
+});
+
+// ── Admin CRUD ───────────────────────────────────────────────────────────────
+// Todas estas rutas pasan por requireAdmin + requireCsrf (sin { public: true }).
+
+// Resuelve un fileStorageId (Convex storage) a fileUrl pública si viene en el body.
+async function resolveStorageId(body) {
+  if (!body || typeof body !== "object") return body;
+  const sid = body.fileStorageId;
+  if (typeof sid !== "string" || !sid) return body;
+  const url = await _convex.query(_api.storage.getStorageUrl, { storageId: sid });
+  if (typeof url === "string" && url) body.fileUrl = url;
+  delete body.fileStorageId;
+  return body;
+}
+
+// GET /api/admin/resources — listado admin (acepta q, cursor, kind, limit)
+router.get("/api/admin/resources", async (req, res) => {
+  try {
+    const p = new URL(req.url, "http://x").searchParams;
+    const rawKind = p.get("kind");
+    if (rawKind !== null && !VALID_KINDS.has(rawKind)) {
+      sendJson(res, 400, { error: "kind inválido" });
+      return;
+    }
+    const args = {
+      limit:  Math.min(Math.max(1, parseInt(p.get("limit") || "20", 10)), 100),
+      cursor: p.get("cursor")  || undefined,
+      q:      p.get("q")       || undefined,
+      kind:   rawKind          || undefined,
+    };
+    const result = await _convex.query(_api.resources.listFiltered, args);
+    sendJson(res, 200, result);
+  } catch (err) {
+    const status = err.status || 500;
+    sendJson(res, status, { error: err.message || "Error al listar." });
+  }
+});
+
+// POST /api/admin/resources/upload-url — genera URL de subida Convex Storage
+router.post("/api/admin/resources/upload-url", async (req, res) => {
+  try {
+    const uploadUrl = await _convex.mutation(_api.storage.generateUploadUrl, {});
+    sendJson(res, 200, { uploadUrl });
+  } catch (err) {
+    sendJson(res, 500, { error: "No se pudo generar URL de subida." });
+  }
+});
+
+// PATCH /api/admin/resources/:id — actualiza recurso (parcial)
+router.patch("/api/admin/resources/:id", async (req, res) => {
+  const id = req.params?.id;
+  if (!id) {
+    sendJson(res, 400, { error: "Falta id" });
+    return;
+  }
+  try {
+    const body  = await readBody(req);
+    await resolveStorageId(body);
+    const prev  = await _convex.query(_api.resources.getById, { id });
+    if (!prev) {
+      sendJson(res, 404, { error: "Recurso no encontrado" });
+      return;
+    }
+    const resource = await _convex.mutation(_api.resources.update, { id, ...body });
+
+    // Encola OG si pasamos a ser externo o si cambia sourceUrl
+    if (resource.isExternal && resource.sourceUrl) {
+      const sourceChanged = prev.sourceUrl !== resource.sourceUrl;
+      const becameExternal = !prev.isExternal && resource.isExternal;
+      if (sourceChanged || becameExternal) ogQueue.enqueue(resource.id);
+    }
+    sendJson(res, 200, resource);
+  } catch (err) {
+    const status = err.status || 400;
+    sendJson(res, status, { error: err.message || "No se pudo actualizar el recurso." });
+  }
+});
+
+// DELETE /api/admin/resources/:id — elimina (syncFacets limpia junctions)
+router.delete("/api/admin/resources/:id", async (req, res) => {
+  const id = req.params?.id;
+  if (!id) {
+    sendJson(res, 400, { error: "Falta id" });
+    return;
+  }
+  try {
+    const result = await _convex.mutation(_api.resources.remove, { id });
+    sendJson(res, 200, result);
+  } catch (err) {
+    const status = err.status || 400;
+    sendJson(res, status, { error: err.message || "No se pudo eliminar el recurso." });
   }
 });
 

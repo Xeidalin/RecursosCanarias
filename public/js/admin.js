@@ -24,6 +24,9 @@ async function apiAdminFetch(url, options = {}) {
   return fetch(url, { ...options, headers, credentials: "same-origin" });
 }
 
+// Expone el helper a otros scripts del admin sin tocar globals salvo este uno.
+window.apiAdminFetch = apiAdminFetch;
+
 // ─── Active nav item ──────────────────────────────────────────────────────────
 
 (function markAdminActive() {

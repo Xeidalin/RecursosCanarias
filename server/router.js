@@ -42,6 +42,7 @@ const router = {
   get:    (p, h, o) => addRoute("GET",    p, h, o),
   post:   (p, h, o) => addRoute("POST",   p, h, o),
   put:    (p, h, o) => addRoute("PUT",    p, h, o),
+  patch:  (p, h, o) => addRoute("PATCH",  p, h, o),
   delete: (p, h, o) => addRoute("DELETE", p, h, o),
 };
 

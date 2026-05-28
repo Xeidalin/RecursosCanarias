@@ -21,6 +21,10 @@ if (!CONVEX_URL) {
 
 const convex = new ConvexHttpClient(CONVEX_URL);
 
+// OG fetch queue — inicializar antes que los routes que la usan
+const ogQueue = require("./server/ogQueue.js");
+ogQueue.init(convex, api);
+
 // Wire up routes (side-effect imports register routes in the router)
 const resourcesRoute = require("./server/routes/api-resources.js");
 resourcesRoute.init(convex, api);

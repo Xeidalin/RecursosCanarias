@@ -2,6 +2,7 @@
 
 const { router } = require("../router.js");
 const { sendJson, readBody } = require("../http.js");
+const ogQueue = require("../ogQueue.js");
 
 let _convex = null;
 let _api    = null;
@@ -69,10 +70,39 @@ router.post("/api/resources", async (req, res) => {
       return;
     }
     const resource = await _convex.mutation(_api.resources.create, body);
+    if (resource && resource.isExternal && resource.sourceUrl) {
+      ogQueue.enqueue(resource.id);
+    }
     sendJson(res, 201, resource);
   } catch (err) {
     const status = err.status || 400;
     sendJson(res, status, { error: err.message || "No se pudo guardar el recurso." });
+  }
+});
+
+// POST /api/admin/resources/:id/refresh-og — reencola un recurso externo.
+// Protegido por requireAdmin + requireCsrf (no es { public: true }).
+router.post("/api/admin/resources/:id/refresh-og", async (req, res) => {
+  const id = req.params?.id;
+  if (!id) {
+    sendJson(res, 400, { error: "Falta id" });
+    return;
+  }
+  try {
+    const resource = await _convex.query(_api.resources.getById, { id });
+    if (!resource) {
+      sendJson(res, 404, { error: "Recurso no encontrado" });
+      return;
+    }
+    if (!resource.isExternal || !resource.sourceUrl) {
+      sendJson(res, 400, { error: "El recurso no es externo o no tiene sourceUrl" });
+      return;
+    }
+    const queued = ogQueue.enqueue(id);
+    sendJson(res, 202, { queued });
+  } catch (err) {
+    const status = err.status || 500;
+    sendJson(res, status, { error: err.message || "No se pudo encolar el refresco." });
   }
 });
 

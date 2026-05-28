@@ -258,6 +258,29 @@ export const remove = mutation({
   },
 });
 
+// Returns up to `limit` external resources whose og is missing or older than `olderThanMs`.
+// Used by the refresh-stale-og cron endpoint to keep external metadata fresh.
+export const listStaleOg = query({
+  args: {
+    limit:       v.optional(v.number()),
+    olderThanMs: v.optional(v.number()),
+  },
+  handler: async (ctx, { limit, olderThanMs }) => {
+    const max     = Math.min(Math.max(1, limit ?? 50), 200);
+    const cutoff  = Date.now() - (olderThanMs ?? 30 * 24 * 60 * 60 * 1000);
+    const all     = await ctx.db.query("resources").collect();
+    const stale   = [];
+    for (const d of all) {
+      if (!d.isExternal || !d.sourceUrl) continue;
+      if (!d.og) { stale.push(d); continue; }
+      const fetchedAt = Date.parse(d.og.fetchedAt || "");
+      if (Number.isNaN(fetchedAt) || fetchedAt < cutoff) stale.push(d);
+      if (stale.length >= max) break;
+    }
+    return stale.map((d) => ({ id: d._id, sourceUrl: d.sourceUrl }));
+  },
+});
+
 export const setOg = mutation({
   args: {
     id: v.id("resources"),

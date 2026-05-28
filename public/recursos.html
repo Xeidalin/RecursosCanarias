@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+{{>head}}
+<body>
+{{>header}}
+
+  <main>
+    <div class="recursos-layout">
+
+      <!-- ── Sidebar de filtros ──────────────────────────────────── -->
+      <aside class="recursos-sidebar" aria-label="Filtros de búsqueda">
+        <h2>Filtros</h2>
+
+        <!-- Búsqueda de texto -->
+        <div class="filter-group">
+          <label class="filter-group__label" for="recursos-q">Buscar</label>
+          <div class="search-form" style="flex-direction:column;gap:8px;">
+            <input class="search-input" type="search" id="recursos-q" name="q"
+                   placeholder="Palabras clave…" autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Tipo -->
+        <div class="filter-group">
+          <span class="filter-group__label" id="lbl-kind">Tipo</span>
+          <div class="filter-group__options" role="group" aria-labelledby="lbl-kind" id="filter-kind">
+            <label class="filter-option"><input type="radio" name="kind" value=""> Todos los tipos</label>
+            <label class="filter-option"><input type="radio" name="kind" value="pdf"> PDF</label>
+            <label class="filter-option"><input type="radio" name="kind" value="image"> Imagen</label>
+            <label class="filter-option"><input type="radio" name="kind" value="video"> Vídeo</label>
+            <label class="filter-option"><input type="radio" name="kind" value="activity"> Ficha</label>
+            <label class="filter-option"><input type="radio" name="kind" value="song"> Canción</label>
+            <label class="filter-option"><input type="radio" name="kind" value="audio"> Audio</label>
+            <label class="filter-option"><input type="radio" name="kind" value="presentation"> Presentación</label>
+          </div>
+        </div>
+
+        <!-- Isla -->
+        <div class="filter-group">
+          <span class="filter-group__label" id="lbl-islands">Isla</span>
+          <div class="filter-group__options" role="group" aria-labelledby="lbl-islands" id="filter-islands">
+            <label class="filter-option"><input type="checkbox" data-key="islands" value="tenerife"> Tenerife</label>
+            <label class="filter-option"><input type="checkbox" data-key="islands" value="gran-canaria"> Gran Canaria</label>
+            <label class="filter-option"><input type="checkbox" data-key="islands" value="lanzarote"> Lanzarote</label>
+            <label class="filter-option"><input type="checkbox" data-key="islands" value="fuerteventura"> Fuerteventura</label>
+            <label class="filter-option"><input type="checkbox" data-key="islands" value="la-palma"> La Palma</label>
+            <label class="filter-option"><input type="checkbox" data-key="islands" value="la-gomera"> La Gomera</label>
+            <label class="filter-option"><input type="checkbox" data-key="islands" value="el-hierro"> El Hierro</label>
+          </div>
+        </div>
+
+        <!-- Nivel -->
+        <div class="filter-group">
+          <span class="filter-group__label" id="lbl-levels">Nivel</span>
+          <div class="filter-group__options" role="group" aria-labelledby="lbl-levels" id="filter-levels">
+            <label class="filter-option"><input type="checkbox" data-key="levels" value="infantil"> Infantil</label>
+            <label class="filter-option"><input type="checkbox" data-key="levels" value="primaria"> Primaria</label>
+            <label class="filter-option"><input type="checkbox" data-key="levels" value="eso"> ESO</label>
+            <label class="filter-option"><input type="checkbox" data-key="levels" value="bachillerato"> Bachillerato</label>
+            <label class="filter-option"><input type="checkbox" data-key="levels" value="fp"> FP</label>
+          </div>
+        </div>
+
+        <!-- Materia -->
+        <div class="filter-group">
+          <span class="filter-group__label" id="lbl-topics">Materia</span>
+          <div class="filter-group__options" role="group" aria-labelledby="lbl-topics" id="filter-topics">
+            <label class="filter-option"><input type="checkbox" data-key="topics" value="naturaleza"> Naturaleza</label>
+            <label class="filter-option"><input type="checkbox" data-key="topics" value="historia"> Historia</label>
+            <label class="filter-option"><input type="checkbox" data-key="topics" value="cultura"> Cultura</label>
+            <label class="filter-option"><input type="checkbox" data-key="topics" value="lengua"> Lengua</label>
+            <label class="filter-option"><input type="checkbox" data-key="topics" value="matematicas"> Matemáticas</label>
+            <label class="filter-option"><input type="checkbox" data-key="topics" value="arte"> Arte</label>
+            <label class="filter-option"><input type="checkbox" data-key="topics" value="ciencias"> Ciencias</label>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ── Zona de resultados ──────────────────────────────────── -->
+      <div class="recursos-main">
+
+        <!-- Toolbar: pills + contador -->
+        <div class="recursos-toolbar">
+          <div class="filter-pills" id="active-filters" hidden aria-label="Filtros activos"></div>
+          <p class="recursos-count" id="recursos-count" aria-live="polite"></p>
+        </div>
+
+        <!-- Grid de recursos -->
+        <div class="recursos-grid" id="recursos-grid" aria-live="polite" aria-busy="true">
+          <div class="resource-card skeleton" aria-hidden="true"></div>
+          <div class="resource-card skeleton" aria-hidden="true"></div>
+          <div class="resource-card skeleton" aria-hidden="true"></div>
+          <div class="resource-card skeleton" aria-hidden="true"></div>
+          <div class="resource-card skeleton" aria-hidden="true"></div>
+          <div class="resource-card skeleton" aria-hidden="true"></div>
+        </div>
+
+        <button class="load-more-btn" id="load-more-btn" hidden type="button">
+          Cargar más recursos
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+{{>footer}}
+<script src="/js/filters.js" defer></script>
+<script src="/js/resources.js" defer></script>
+</body>
+</html>

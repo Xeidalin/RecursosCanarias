@@ -1,182 +1,502 @@
 [
   {
-    "id": "img-volcanes-001",
+    "slug": "volcanes-y-materiales",
     "title": "Volcanes y materiales",
-    "type": "Imagen",
-    "stage": "Primaria",
-    "level": "3º",
-    "subject": "Conocimiento del medio",
-    "island": "Lanzarote",
-    "license": "Uso educativo",
+    "kind": "image",
+    "isExternal": false,
+    "sourceUrl": "",
+    "fileUrl": "",
+    "islands": [
+      "lanzarote"
+    ],
+    "topics": [
+      "conocimiento-del-medio",
+      "primaria"
+    ],
+    "levels": [
+      "3-primaria"
+    ],
     "description": "Banco visual para observar conos, coladas y materiales volcánicos en una secuencia de aula.",
     "imageUrl": "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80",
-    "fileUrl": "#",
-    "tags": ["volcanes", "paisaje", "ciencias"],
+    "license": "Uso educativo",
+    "tags": [
+      "volcanes",
+      "paisaje",
+      "ciencias"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
     "createdAt": "2026-05-24T00:00:00.000Z"
   },
   {
-    "id": "ficha-salida-002",
+    "slug": "diario-de-una-salida-al-entorno",
     "title": "Diario de una salida al entorno",
-    "type": "Ficha",
-    "stage": "Primaria",
-    "level": "4º",
-    "subject": "Lengua",
-    "island": "Canarias",
-    "license": "CC BY-NC",
+    "kind": "activity",
+    "isExternal": false,
+    "sourceUrl": "",
+    "fileUrl": "",
+    "islands": [
+      "todas"
+    ],
+    "topics": [
+      "lengua",
+      "primaria"
+    ],
+    "levels": [
+      "4-primaria"
+    ],
     "description": "Plantilla para registrar observaciones, vocabulario nuevo y preguntas durante una salida escolar.",
     "imageUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
-    "fileUrl": "#",
-    "tags": ["salida", "expresion escrita", "observacion"],
+    "license": "CC BY-NC",
+    "tags": [
+      "salida",
+      "expresion escrita",
+      "observacion"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
     "createdAt": "2026-05-24T00:00:00.000Z"
   },
   {
-    "id": "img-bosques-003",
+    "slug": "bosques-y-humedad",
     "title": "Bosques y humedad",
-    "type": "Imagen",
-    "stage": "Primaria",
-    "level": "5º",
-    "subject": "Conocimiento del medio",
-    "island": "La Gomera",
-    "license": "Uso educativo",
+    "kind": "image",
+    "isExternal": false,
+    "sourceUrl": "",
+    "fileUrl": "",
+    "islands": [
+      "la-gomera"
+    ],
+    "topics": [
+      "conocimiento-del-medio",
+      "primaria"
+    ],
+    "levels": [
+      "5-primaria"
+    ],
     "description": "Imagenes para comparar laurisilva, pinar y zonas de costa desde una mirada ecosistemica.",
     "imageUrl": "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=80",
-    "fileUrl": "#",
-    "tags": ["laurisilva", "ecosistemas", "clima"],
+    "license": "Uso educativo",
+    "tags": [
+      "laurisilva",
+      "ecosistemas",
+      "clima"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
     "createdAt": "2026-05-24T00:00:00.000Z"
   },
   {
-    "id": "pdf-rubrica-004",
+    "slug": "rubrica-editable-para-situacion-de-aprendizaje",
     "title": "Rúbrica editable para situación de aprendizaje",
-    "type": "PDF",
-    "stage": "Docentes",
-    "level": "Programacion",
-    "subject": "Evaluacion",
-    "island": "Canarias",
-    "license": "CC BY",
+    "kind": "pdf",
+    "isExternal": false,
+    "sourceUrl": "",
+    "fileUrl": "",
+    "islands": [
+      "todas"
+    ],
+    "topics": [
+      "evaluacion",
+      "docentes"
+    ],
+    "levels": [
+      "docentes"
+    ],
     "description": "Documento base con criterios, evidencias y niveles de logro para adaptar al aula.",
     "imageUrl": "https://images.unsplash.com/photo-1456324504439-367cee3b3c32?auto=format&fit=crop&w=900&q=80",
-    "fileUrl": "#",
-    "tags": ["rubrica", "lomloe", "evaluacion"],
+    "license": "CC BY",
+    "tags": [
+      "rubrica",
+      "lomloe",
+      "evaluacion"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
     "createdAt": "2026-05-24T00:00:00.000Z"
   },
   {
-    "id": "img-mapas-005",
+    "slug": "mapas-e-islas",
     "title": "Mapas e islas",
-    "type": "Imagen",
-    "stage": "Primaria",
-    "level": "6º",
-    "subject": "Geografia",
-    "island": "Canarias",
-    "license": "Uso educativo",
+    "kind": "image",
+    "isExternal": false,
+    "sourceUrl": "",
+    "fileUrl": "",
+    "islands": [
+      "todas"
+    ],
+    "topics": [
+      "geografia",
+      "primaria"
+    ],
+    "levels": [
+      "6-primaria"
+    ],
     "description": "Recurso visual para introducir lectura cartografica, escala, orientacion e insularidad.",
     "imageUrl": "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=900&q=80",
-    "fileUrl": "#",
-    "tags": ["mapas", "islas", "geografia"],
+    "license": "Uso educativo",
+    "tags": [
+      "mapas",
+      "islas",
+      "geografia"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
     "createdAt": "2026-05-24T00:00:00.000Z"
   },
   {
-    "id": "tarea-local-006",
+    "slug": "miniinvestigacion-local",
     "title": "Miniinvestigación local",
-    "type": "Tarea",
-    "stage": "Primaria",
-    "level": "2º",
-    "subject": "Conocimiento del medio",
-    "island": "Canarias",
-    "license": "Uso educativo",
+    "kind": "activity",
+    "isExternal": false,
+    "sourceUrl": "",
+    "fileUrl": "",
+    "islands": [
+      "todas"
+    ],
+    "topics": [
+      "conocimiento-del-medio",
+      "primaria"
+    ],
+    "levels": [
+      "2-primaria"
+    ],
     "description": "Actividad para casa y aula: entrevistar, fotografiar y describir un elemento del entorno cercano.",
     "imageUrl": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80",
-    "fileUrl": "#",
-    "tags": ["familia", "entorno", "oralidad"],
+    "license": "Uso educativo",
+    "tags": [
+      "familia",
+      "entorno",
+      "oralidad"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
     "createdAt": "2026-05-24T00:00:00.000Z"
   },
   {
-    "id": "img-litoral-007",
+    "slug": "litoral-y-erosion",
     "title": "Litoral y erosión",
-    "type": "Imagen",
-    "stage": "Secundaria",
-    "level": "1º ESO",
-    "subject": "Biologia y Geologia",
-    "island": "Fuerteventura",
-    "license": "CC BY-NC",
+    "kind": "image",
+    "isExternal": false,
+    "sourceUrl": "",
+    "fileUrl": "",
+    "islands": [
+      "fuerteventura"
+    ],
+    "topics": [
+      "biologia-y-geologia",
+      "secundaria"
+    ],
+    "levels": [
+      "1-eso"
+    ],
     "description": "Secuencia visual para trabajar cambios del relieve, costa, viento y accion marina.",
     "imageUrl": "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=900&q=80",
-    "fileUrl": "#",
-    "tags": ["litoral", "erosion", "relieve"],
+    "license": "CC BY-NC",
+    "tags": [
+      "litoral",
+      "erosion",
+      "relieve"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
     "createdAt": "2026-05-24T00:00:00.000Z"
   },
   {
-    "id": "video-colores-008",
+    "slug": "colores-del-entorno",
     "title": "Colores del entorno",
-    "type": "Video",
-    "stage": "Infantil",
-    "level": "5 años",
-    "subject": "Educacion artistica",
-    "island": "Canarias",
-    "license": "Uso educativo",
+    "kind": "video",
+    "isExternal": false,
+    "sourceUrl": "",
+    "fileUrl": "",
+    "islands": [
+      "todas"
+    ],
+    "topics": [
+      "educacion-artistica",
+      "infantil"
+    ],
+    "levels": [
+      "infantil-5"
+    ],
     "description": "Propuesta audiovisual breve para reconocer colores, formas y texturas del entorno.",
     "imageUrl": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=900&q=80",
-    "fileUrl": "#",
-    "tags": ["colores", "arte", "infantil"],
+    "license": "Uso educativo",
+    "tags": [
+      "colores",
+      "arte",
+      "infantil"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
     "createdAt": "2026-05-24T00:00:00.000Z"
   },
   {
-    "id": "img-flora-009",
+    "slug": "flora-canaria-drago-pino-y-laurisilva",
     "title": "Flora canaria: drago, pino y laurisilva",
-    "type": "Imagen",
-    "stage": "Primaria",
-    "level": "3º",
-    "subject": "Conocimiento del medio",
-    "island": "Canarias",
-    "license": "Uso educativo",
+    "kind": "image",
+    "isExternal": false,
+    "sourceUrl": "",
+    "fileUrl": "",
+    "islands": [
+      "todas"
+    ],
+    "topics": [
+      "conocimiento-del-medio",
+      "primaria"
+    ],
+    "levels": [
+      "3-primaria"
+    ],
     "description": "Galeria inicial para reconocer especies vegetales representativas y relacionarlas con el clima de cada zona.",
     "imageUrl": "https://images.unsplash.com/photo-1599407384144-377311716111?auto=format&fit=crop&w=900&q=80",
-    "fileUrl": "#",
-    "tags": ["flora", "drago", "laurisilva", "endemismos"],
+    "license": "Uso educativo",
+    "tags": [
+      "flora",
+      "drago",
+      "laurisilva",
+      "endemismos"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
     "createdAt": "2026-05-24T00:00:00.000Z"
   },
   {
-    "id": "img-fauna-010",
+    "slug": "fauna-de-costa-y-monte",
     "title": "Fauna de costa y monte",
-    "type": "Imagen",
-    "stage": "Primaria",
-    "level": "5º",
-    "subject": "Conocimiento del medio",
-    "island": "Canarias",
-    "license": "Uso educativo",
+    "kind": "image",
+    "isExternal": false,
+    "sourceUrl": "",
+    "fileUrl": "",
+    "islands": [
+      "todas"
+    ],
+    "topics": [
+      "conocimiento-del-medio",
+      "primaria"
+    ],
+    "levels": [
+      "5-primaria"
+    ],
     "description": "Imagenes para clasificar animales segun habitat, alimentacion y adaptaciones al entorno insular.",
     "imageUrl": "https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=900&q=80",
-    "fileUrl": "#",
-    "tags": ["fauna", "aves", "habitat", "ecosistemas"],
+    "license": "Uso educativo",
+    "tags": [
+      "fauna",
+      "aves",
+      "habitat",
+      "ecosistemas"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
     "createdAt": "2026-05-24T00:00:00.000Z"
   },
   {
-    "id": "ficha-vestimenta-011",
+    "slug": "vestimenta-tradicional-y-oficios",
     "title": "Vestimenta tradicional y oficios",
-    "type": "Ficha",
-    "stage": "Primaria",
-    "level": "4º",
-    "subject": "Ciencias sociales",
-    "island": "Canarias",
-    "license": "CC BY-NC",
+    "kind": "activity",
+    "isExternal": false,
+    "sourceUrl": "",
+    "fileUrl": "",
+    "islands": [
+      "todas"
+    ],
+    "topics": [
+      "ciencias-sociales",
+      "primaria"
+    ],
+    "levels": [
+      "4-primaria"
+    ],
     "description": "Ficha para observar prendas, materiales, usos sociales y relacionarlos con oficios y fiestas populares.",
     "imageUrl": "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=80",
-    "fileUrl": "#",
-    "tags": ["vestimenta", "tradicion", "oficios", "patrimonio"],
+    "license": "CC BY-NC",
+    "tags": [
+      "vestimenta",
+      "tradicion",
+      "oficios",
+      "patrimonio"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
     "createdAt": "2026-05-24T00:00:00.000Z"
   },
   {
-    "id": "pdf-gastronomia-012",
+    "slug": "gastronomia-canaria-en-el-aula",
     "title": "Gastronomia canaria en el aula",
-    "type": "PDF",
-    "stage": "Primaria",
-    "level": "6º",
-    "subject": "Lengua",
-    "island": "Canarias",
-    "license": "Uso educativo",
+    "kind": "pdf",
+    "isExternal": false,
+    "sourceUrl": "",
+    "fileUrl": "",
+    "islands": [
+      "todas"
+    ],
+    "topics": [
+      "lengua",
+      "primaria"
+    ],
+    "levels": [
+      "6-primaria"
+    ],
     "description": "Propuesta de lectura, vocabulario y pequena investigacion sobre productos locales, recetas y mercados.",
     "imageUrl": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80",
-    "fileUrl": "#",
-    "tags": ["gastronomia", "recetas", "productos locales", "mercados"],
+    "license": "Uso educativo",
+    "tags": [
+      "gastronomia",
+      "recetas",
+      "productos locales",
+      "mercados"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
     "createdAt": "2026-05-24T00:00:00.000Z"
+  },
+  {
+    "slug": "parque-nacional-teide-programa-educativo",
+    "title": "Programa educativo del Parque Nacional del Teide",
+    "kind": "activity",
+    "isExternal": true,
+    "sourceUrl": "https://www.miteco.gob.es/es/red-parques-nacionales/nuestros-parques/teide/educacion.html",
+    "fileUrl": "",
+    "islands": [
+      "tenerife"
+    ],
+    "topics": [
+      "naturaleza",
+      "ciencias-naturales"
+    ],
+    "levels": [
+      "5-primaria",
+      "6-primaria",
+      "1-eso",
+      "2-eso"
+    ],
+    "description": "Propuestas educativas del Parque Nacional del Teide para escolares.",
+    "imageUrl": "",
+    "license": "Uso educativo",
+    "tags": [
+      "teide",
+      "parque-nacional",
+      "naturaleza",
+      "volcanes"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
+    "createdAt": "2026-05-27T00:00:00.000Z"
+  },
+  {
+    "slug": "reserva-biosfera-lanzarote-educacion",
+    "title": "Reserva de la Biosfera de Lanzarote — Recursos educativos",
+    "kind": "activity",
+    "isExternal": true,
+    "sourceUrl": "https://www.lanzarotebiosphere.es/educacion",
+    "fileUrl": "",
+    "islands": [
+      "lanzarote"
+    ],
+    "topics": [
+      "naturaleza",
+      "ciencias-naturales"
+    ],
+    "levels": [
+      "3-primaria",
+      "4-primaria",
+      "5-primaria",
+      "1-eso"
+    ],
+    "description": "Materiales educativos sobre la Reserva de la Biosfera de Lanzarote para centros escolares.",
+    "imageUrl": "",
+    "license": "Uso educativo",
+    "tags": [
+      "lanzarote",
+      "biosfera",
+      "sostenibilidad",
+      "medio-ambiente"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
+    "createdAt": "2026-05-27T00:00:00.000Z"
+  },
+  {
+    "slug": "garajonay-educacion-ambiental-laurisilva",
+    "title": "Garajonay — Educación ambiental en la laurisilva",
+    "kind": "activity",
+    "isExternal": true,
+    "sourceUrl": "https://www.miteco.gob.es/es/red-parques-nacionales/nuestros-parques/garajonay/educacion.html",
+    "fileUrl": "",
+    "islands": [
+      "la-gomera"
+    ],
+    "topics": [
+      "naturaleza",
+      "ciencias-naturales"
+    ],
+    "levels": [
+      "3-primaria",
+      "4-primaria",
+      "5-primaria",
+      "6-primaria"
+    ],
+    "description": "Programa de educación ambiental del Parque Nacional de Garajonay en La Gomera.",
+    "imageUrl": "",
+    "license": "Uso educativo",
+    "tags": [
+      "garajonay",
+      "laurisilva",
+      "la-gomera",
+      "naturaleza"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
+    "createdAt": "2026-05-27T00:00:00.000Z"
+  },
+  {
+    "slug": "caldera-taburiente-programa-escolar",
+    "title": "Caldera de Taburiente — Programa escolar",
+    "kind": "activity",
+    "isExternal": true,
+    "sourceUrl": "https://www.miteco.gob.es/es/red-parques-nacionales/nuestros-parques/la-palma/educacion.html",
+    "fileUrl": "",
+    "islands": [
+      "la-palma"
+    ],
+    "topics": [
+      "naturaleza",
+      "geologia"
+    ],
+    "levels": [
+      "5-primaria",
+      "6-primaria",
+      "1-eso",
+      "2-eso"
+    ],
+    "description": "Actividades educativas del Parque Nacional de la Caldera de Taburiente.",
+    "imageUrl": "",
+    "license": "Uso educativo",
+    "tags": [
+      "la-palma",
+      "caldera",
+      "parque-nacional",
+      "geologia"
+    ],
+    "og": null,
+    "views": 0,
+    "downloads": 0,
+    "createdAt": "2026-05-27T00:00:00.000Z"
   }
 ]

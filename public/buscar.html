@@ -1,12 +1,22 @@
 <!doctype html>
 <html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Recursos Canarias</title>
-  <meta http-equiv="refresh" content="0; url=/">
-</head>
+{{>head}}
 <body>
-  <p>Redirigiendo a <a href="/">Recursos Canarias</a>.</p>
+{{>header}}
+
+<main class="search-page">
+  <div class="search-hero">
+    <h1>Buscar recursos</h1>
+    <form class="search-form" action="/buscar" method="get" aria-label="Buscar recursos educativos">
+      <input class="search-input" type="search" name="q" placeholder="Escribe un tema, materia o nivel…" autofocus>
+      <button class="search-submit" type="submit">Buscar</button>
+    </form>
+  </div>
+  <div id="search-results">
+    <!-- Resultados cargados por buscar.js (T13) -->
+  </div>
+</main>
+
+{{>footer}}
 </body>
 </html>

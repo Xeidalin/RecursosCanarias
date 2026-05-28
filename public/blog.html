@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+{{>head}}
+<body>
+{{>header}}
+
+  <main>
+    <div class="home-section">
+      <div class="panel-head">
+        <h1 style="font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;color:#073b34;margin:0">Blog y novedades</h1>
+      </div>
+
+      <div class="blog-cards" id="blog-list" aria-live="polite" aria-busy="true">
+        <div class="blog-card skeleton" aria-hidden="true"></div>
+        <div class="blog-card skeleton" aria-hidden="true"></div>
+        <div class="blog-card skeleton" aria-hidden="true"></div>
+      </div>
+
+      <button class="load-more-btn" id="blog-load-more" hidden type="button">
+        Cargar más entradas
+      </button>
+    </div>
+  </main>
+
+{{>footer}}
+<script src="/js/blog.js" defer></script>
+</body>
+</html>

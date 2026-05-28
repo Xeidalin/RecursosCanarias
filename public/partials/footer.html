@@ -1,0 +1,26 @@
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-subscribe">
+      <p><strong>Recibe novedades</strong> sobre nuevos recursos educativos en Canarias.</p>
+      <form class="subscribe-form" id="subscribe-form" novalidate>
+        <input type="email" name="email" id="subscribe-email"
+               placeholder="tu@correo.es" autocomplete="email"
+               aria-label="Correo electrónico" required>
+        <button type="submit">Suscribirme</button>
+      </form>
+      <p class="subscribe-feedback" id="subscribe-msg" aria-live="polite" hidden></p>
+    </div>
+
+    <nav class="footer-nav" aria-label="Pie de página">
+      <a href="/acerca">Acerca de</a>
+      <a href="/legal/privacidad">Privacidad</a>
+      <a href="/legal/aviso-legal">Aviso legal</a>
+      <a href="/legal/cookies">Cookies</a>
+    </nav>
+
+    <p class="footer-copy">
+      &copy; {{year}} Recursos Canarias &mdash;
+      Materiales para la educación en Canarias.
+    </p>
+  </div>
+</footer>

@@ -1,0 +1,56 @@
+<header class="site-header">
+  <a class="logo" href="/" aria-label="Recursos Canarias">
+    <span class="logo-flower" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+    </span>
+    <span>Recursos<br>Canarias</span>
+  </a>
+
+  <nav class="main-nav" aria-label="Navegacion principal">
+    <a href="/">Inicio</a>
+
+    <div class="nav-group">
+      <button class="nav-group__btn" type="button" aria-haspopup="true" aria-expanded="false">
+        Recursos <span class="nav-arrow" aria-hidden="true">▾</span>
+      </button>
+      <ul class="nav-group__menu" role="menu">
+        <li role="none" class="menu-section-label">Por isla</li>
+        <li role="none"><a href="/islas/tenerife"       role="menuitem">Tenerife</a></li>
+        <li role="none"><a href="/islas/gran-canaria"   role="menuitem">Gran Canaria</a></li>
+        <li role="none"><a href="/islas/lanzarote"      role="menuitem">Lanzarote</a></li>
+        <li role="none"><a href="/islas/fuerteventura"  role="menuitem">Fuerteventura</a></li>
+        <li role="none"><a href="/islas/la-palma"       role="menuitem">La Palma</a></li>
+        <li role="none"><a href="/islas/la-gomera"      role="menuitem">La Gomera</a></li>
+        <li role="none"><a href="/islas/el-hierro"      role="menuitem">El Hierro</a></li>
+        <li role="none" class="menu-divider" aria-hidden="true"></li>
+        <li role="none"><a href="/recursos"             role="menuitem">Todos los recursos</a></li>
+        <li role="none"><a href="/descargas"            role="menuitem">Descargas</a></li>
+        <li role="none"><a href="/blog"                 role="menuitem">Blog y novedades</a></li>
+        <li role="none"><a href="/noticias"             role="menuitem">Noticias Consejería</a></li>
+      </ul>
+    </div>
+
+    <a href="/acerca">Acerca de</a>
+  </nav>
+
+  <div class="header-tools">
+    <button class="search-toggle" type="button"
+            aria-label="Buscar (Ctrl+K)" aria-expanded="false"
+            aria-controls="search-overlay">⌕</button>
+    <a class="admin-btn" href="/admin/login" aria-label="Panel de administración">🔒</a>
+  </div>
+</header>
+
+<!-- Search overlay — controlled by common.js -->
+<div class="search-overlay" id="search-overlay" role="dialog" aria-label="Buscar" aria-modal="true" hidden>
+  <div class="search-overlay__inner">
+    <button class="search-overlay__close" type="button" aria-label="Cerrar búsqueda">✕</button>
+    <form class="search-overlay__form" action="/buscar" method="get">
+      <label class="sr-only" for="search-overlay-input">Buscar recursos</label>
+      <input type="search" name="q" id="search-overlay-input"
+             placeholder="Buscar recursos, temas, islas…" autocomplete="off">
+      <button type="submit">Buscar</button>
+    </form>
+    <p class="search-overlay__hint">Pulsa <kbd>Esc</kbd> para cerrar</p>
+  </div>
+</div>

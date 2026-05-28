@@ -6,9 +6,16 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "convex": "convex dev",
+    "seed": "node scripts/seed.js",
+    "test": "node --test test/*.test.js"
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "convex": "^1.39.1",
+    "dotenv": "^17.4.2"
   }
 }

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+{{>head}}
+<body class="admin-login-page">
+  <main class="admin-login-main">
+    <div class="admin-login-card">
+      <div class="admin-login-brand">
+        <span class="logo-flower" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </span>
+        <span>Recursos<br>Canarias</span>
+      </div>
+
+      <h1 class="admin-login-title">Panel de administración</h1>
+
+      <form id="login-form" class="admin-form" novalidate autocomplete="off">
+        <div class="admin-form-group">
+          <label for="login-username">Usuario</label>
+          <input type="text" id="login-username" name="username"
+                 autocomplete="username" required autofocus>
+        </div>
+        <div class="admin-form-group">
+          <label for="login-password">Contraseña</label>
+          <input type="password" id="login-password" name="password"
+                 autocomplete="current-password" required>
+        </div>
+        <button class="admin-submit-btn" type="submit">Entrar</button>
+        <p id="login-error" class="admin-error-msg" hidden></p>
+      </form>
+    </div>
+  </main>
+  <script src="/js/admin.js" defer></script>
+</body>
+</html>

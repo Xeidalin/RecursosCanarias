@@ -6,7 +6,7 @@ require("dotenv").config({ path: path.join(__dirname, "../.env.local") });
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 
 const { ConvexHttpClient } = require("convex/browser");
-const { api }              = require("../convex/_generated/api");
+const { api }              = require("../convex/_generated/api-node.js");
 
 const ISLANDS = [
   {

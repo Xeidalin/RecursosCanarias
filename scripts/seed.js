@@ -17,7 +17,7 @@ require("dotenv").config({ path: path.join(__dirname, "..", ".env.local") });
 require("dotenv").config();
 
 const { ConvexHttpClient } = require("convex/browser");
-const { api }              = require("../convex/_generated/api");
+const { api }              = require("../convex/_generated/api-node.js");
 
 async function main() {
   const url = process.env.CONVEX_URL;

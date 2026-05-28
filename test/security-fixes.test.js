@@ -22,6 +22,7 @@ const { safeDecodeUrl } = require("../server/http.js");
 // Register routes (side-effects)
 require("../server/routes/api-admin.js");
 require("../server/routes/api-resources.js");
+require("../server/routes/pages.js");
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -137,4 +138,57 @@ test("XEI-47: URL válida → pathname decodificada sin query string", () => {
   assert.equal(safeDecodeUrl("/recursos%20canarias"), "/recursos canarias");
   assert.equal(safeDecodeUrl("/normal?q=foo"), "/normal");
   assert.equal(safeDecodeUrl("/sin-codificar"), "/sin-codificar");
+});
+
+// ── XEI-48: wrapper CJS para convex/_generated/api ────────────────────────
+
+test("XEI-48: api-node.js carga como CJS y expone api/internal/components", () => {
+  const mod = require("../convex/_generated/api-node.js");
+  assert.ok(mod.api,        "api debe estar definido");
+  assert.ok(mod.internal,   "internal debe estar definido");
+  assert.ok(mod.components, "components debe estar definido");
+  // anyApi es un Proxy; acceder a una propiedad devuelve otro Proxy/objeto
+  assert.equal(typeof mod.api.resources, "object");
+});
+
+test("XEI-48: scripts/seed.js y scripts/create-admin.js usan api-node.js, no api.js", () => {
+  const seedSrc        = require("node:fs").readFileSync(
+    require("node:path").join(__dirname, "../scripts/seed.js"), "utf8");
+  const createAdminSrc = require("node:fs").readFileSync(
+    require("node:path").join(__dirname, "../scripts/create-admin.js"), "utf8");
+  const seedIslandsSrc = require("node:fs").readFileSync(
+    require("node:path").join(__dirname, "../scripts/seed-islands.js"), "utf8");
+
+  assert.ok(!seedSrc.includes('"../convex/_generated/api"'),
+    "seed.js no debe importar el ESM original");
+  assert.ok(!createAdminSrc.includes('"../convex/_generated/api"'),
+    "create-admin.js no debe importar el ESM original");
+  assert.ok(!seedIslandsSrc.includes('"../convex/_generated/api"'),
+    "seed-islands.js no debe importar el ESM original");
+});
+
+// ── XEI-49: renderPage convierte ENOENT en 404 ───────────────────────────
+
+test("XEI-49: ruta /descargas sin template → 404, no 500", async () => {
+  const req = mockReq("GET", "/descargas");
+  const res = mockRes();
+  const handled = await dispatch(req, res);
+  assert.equal(handled, true);
+  assert.equal(res._status, 404, "debe devolver 404, no 500");
+});
+
+test("XEI-49: ruta /noticias sin template → 404, no 500", async () => {
+  const req = mockReq("GET", "/noticias");
+  const res = mockRes();
+  const handled = await dispatch(req, res);
+  assert.equal(handled, true);
+  assert.equal(res._status, 404);
+});
+
+test("XEI-49: ruta /acerca sin template → 404, no 500", async () => {
+  const req = mockReq("GET", "/acerca");
+  const res = mockRes();
+  const handled = await dispatch(req, res);
+  assert.equal(handled, true);
+  assert.equal(res._status, 404);
 });

@@ -28,7 +28,7 @@ async function main() {
   }
 
   // Lazy require to avoid loading api before env is set
-  const { api } = require("../convex/_generated/api");
+  const { api } = require("../convex/_generated/api-node.js");
   const convex  = new ConvexHttpClient(convexUrl);
 
   try {

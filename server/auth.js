@@ -238,34 +238,38 @@ function requireCsrf(req, res) {
 
 /**
  * Verifica el token interno de cron (Authorization: Bearer <token>).
+ *
+ * Política: ante cualquier fallo (variable no configurada, falta de header,
+ * formato inválido o token incorrecto) responde 401 con el mismo cuerpo
+ * "No autorizado". Nunca filtra estado de configuración interna.
+ * Si la variable falta, lo registra por stderr para que el operador lo vea
+ * sin exponerlo al cliente.
  */
 function requireCronToken(req, res) {
-  const expected = process.env.INTERNAL_CRON_TOKEN;
-  if (!expected) {
-    res.writeHead(500, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "INTERNAL_CRON_TOKEN no configurado" }));
-    return false;
-  }
-  const auth = req.headers["authorization"] || "";
-  const match = auth.match(/^Bearer (.+)$/);
-  if (!match) {
+  const fail = () => {
     res.writeHead(401, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ error: "No autorizado" }));
     return false;
+  };
+
+  const expected = process.env.INTERNAL_CRON_TOKEN;
+  if (!expected) {
+    // No filtrar al cliente: log interno para el operador.
+    console.error("requireCronToken: INTERNAL_CRON_TOKEN no configurado");
+    return fail();
   }
+
+  const auth = req.headers["authorization"] || "";
+  const match = auth.match(/^Bearer (.+)$/);
+  if (!match) return fail();
+
   const provided = match[1];
   try {
     const a = Buffer.from(provided);
     const b = Buffer.from(expected);
-    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
-      res.writeHead(401, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "No autorizado" }));
-      return false;
-    }
+    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return fail();
   } catch {
-    res.writeHead(401, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "No autorizado" }));
-    return false;
+    return fail();
   }
   return true;
 }

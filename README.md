@@ -82,3 +82,22 @@ No hace falta configurar variables para la primera version, salvo que quieras ca
 ## Nota de produccion
 
 En esta version los recursos creados desde la app se guardan en data/resources.json. Para produccion real conviene migrar ese almacenamiento a una base de datos, porque algunos servicios de despliegue no conservan cambios escritos en disco entre reinicios.
+
+## Refresco de metadatos OG (cron)
+
+Los recursos externos (`isExternal=true`) llevan metadatos Open Graph cacheados en `og`. Para mantenerlos al día sin tráfico de usuario, hay un endpoint admin protegido por token interno:
+
+```text
+POST /api/admin/refresh-stale-og
+Authorization: Bearer $INTERNAL_CRON_TOKEN
+```
+
+Selecciona hasta 50 recursos con `og` ausente o `og.fetchedAt` anterior a 30 días y los reencola para que `ogQueue` los procese (SSRF-safe, throttled a 2 peticiones/segundo).
+
+Configura `INTERNAL_CRON_TOKEN` en tu entorno (al menos 32 caracteres aleatorios). Ejemplo de cron del SO (Linux) para correr cada hora:
+
+```cron
+0 * * * * curl -fsS -X POST -H "Authorization: Bearer $INTERNAL_CRON_TOKEN" https://tu-dominio.example/api/admin/refresh-stale-og >/dev/null
+```
+
+Sin token correcto (o si la variable de entorno no está configurada) el endpoint devuelve `401` sin filtrar información.

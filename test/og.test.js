@@ -274,6 +274,30 @@ test("POST /api/admin/refresh-stale-og con token incorrecto → 401", async () =
   assert.equal(res._status, 401);
 });
 
+test("POST /api/admin/refresh-stale-og sin INTERNAL_CRON_TOKEN configurado → 401 (no filtra estado)", async () => {
+  const saved = process.env.INTERNAL_CRON_TOKEN;
+  delete process.env.INTERNAL_CRON_TOKEN;
+  // Silencia el console.error que emite requireCronToken al detectar la variable ausente
+  const savedErr = console.error;
+  console.error = () => {};
+  try {
+    const req = mockReq("POST", "/api/admin/refresh-stale-og", {
+      "authorization": "Bearer cualquier-cosa",
+    });
+    const res = mockRes();
+    await dispatch(req, res);
+    assert.equal(res._status, 401);
+    const body = JSON.parse(res._body);
+    assert.equal(body.error, "No autorizado");
+    // No filtra nombre de variable ni razón
+    assert.ok(!String(res._body).includes("INTERNAL_CRON_TOKEN"));
+    assert.ok(!String(res._body).includes("configurado"));
+  } finally {
+    process.env.INTERNAL_CRON_TOKEN = saved;
+    console.error = savedErr;
+  }
+});
+
 test("POST /api/admin/refresh-stale-og con token correcto → 200 y encola", async () => {
   ogQueue._reset();
   const stub = makeConvexStub({

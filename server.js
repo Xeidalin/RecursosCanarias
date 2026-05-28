@@ -6,7 +6,7 @@ const http = require("node:http");
 const fs   = require("node:fs/promises");
 
 const { ConvexHttpClient } = require("convex/browser");
-const { api }              = require("./convex/_generated/api");
+const { api }              = require("./convex/_generated/api-node.js");
 const { dispatch }         = require("./server/router.js");
 const { send, safeDecodeUrl } = require("./server/http.js");
 

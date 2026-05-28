@@ -22,6 +22,19 @@ function init(convex, api) {
   _api    = api;
 }
 
+async function renderPage(res, filePath, data) {
+  try {
+    const html = await renderFile(filePath, data);
+    send(res, 200, html);
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      send(res, 404, "Página no encontrada", "text/plain; charset=utf-8");
+      return;
+    }
+    throw err;
+  }
+}
+
 function pageData(overrides = {}) {
   return {
     pageTitle:       "Recursos Canarias",
@@ -69,11 +82,8 @@ router.get("/recursos", async (req, res) => {
 
 // Descargas
 router.get("/descargas", async (req, res) => {
-  const html = await renderFile(
-    path.join(PUBLIC_DIR, "descargas.html"),
-    pageData({ pageTitle: "Descargas — Recursos Canarias" })
-  );
-  send(res, 200, html);
+  await renderPage(res, path.join(PUBLIC_DIR, "descargas.html"),
+    pageData({ pageTitle: "Descargas — Recursos Canarias" }));
 }, { public: true });
 
 // Blog list
@@ -157,30 +167,21 @@ router.get("/blog/:slug", async (req, res) => {
 
 // Noticias
 router.get("/noticias", async (req, res) => {
-  const html = await renderFile(
-    path.join(PUBLIC_DIR, "noticias.html"),
-    pageData({ pageTitle: "Noticias Consejería — Recursos Canarias" })
-  );
-  send(res, 200, html);
+  await renderPage(res, path.join(PUBLIC_DIR, "noticias.html"),
+    pageData({ pageTitle: "Noticias Consejería — Recursos Canarias" }));
 }, { public: true });
 
 // Acerca
 router.get("/acerca", async (req, res) => {
-  const html = await renderFile(
-    path.join(PUBLIC_DIR, "acerca.html"),
-    pageData({ pageTitle: "Acerca de — Recursos Canarias" })
-  );
-  send(res, 200, html);
+  await renderPage(res, path.join(PUBLIC_DIR, "acerca.html"),
+    pageData({ pageTitle: "Acerca de — Recursos Canarias" }));
 }, { public: true });
 
 // Legal pages
 for (const slug of ["privacidad", "aviso-legal", "cookies"]) {
   router.get(`/legal/${slug}`, async (req, res) => {
-    const html = await renderFile(
-      path.join(PUBLIC_DIR, `legal/${slug}.html`),
-      pageData({ pageTitle: `${slug.charAt(0).toUpperCase() + slug.slice(1)} — Recursos Canarias` })
-    );
-    send(res, 200, html);
+    await renderPage(res, path.join(PUBLIC_DIR, `legal/${slug}.html`),
+      pageData({ pageTitle: `${slug.charAt(0).toUpperCase() + slug.slice(1)} — Recursos Canarias` }));
   }, { public: true });
 }
 
@@ -189,11 +190,8 @@ for (const page of ["login", "index", "recursos", "blog", "suscriptores", "mensa
   const urlPath = page === "index" ? "/admin" : `/admin/${page}`;
   const isPublic = page === "login";
   router.get(urlPath, async (req, res) => {
-    const html = await renderFile(
-      path.join(PUBLIC_DIR, `admin/${page}.html`),
-      pageData({ pageTitle: "Admin — Recursos Canarias" })
-    );
-    send(res, 200, html);
+    await renderPage(res, path.join(PUBLIC_DIR, `admin/${page}.html`),
+      pageData({ pageTitle: "Admin — Recursos Canarias" }));
   }, { public: isPublic });
 }
 

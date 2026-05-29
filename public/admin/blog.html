@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+{{>head}}
+<body class="admin-page">
+  <div class="admin-layout">
+    {{>admin-sidebar}}
+    <main class="admin-content">
+      <div class="admin-content-header">
+        <h1>Blog</h1>
+        <p class="admin-content-subtitle">Publica artículos, novedades y noticias de la Consejería.</p>
+      </div>
+
+      <div class="admin-toolbar">
+        <input id="search" type="search" class="admin-search"
+               placeholder="Buscar por título" autocomplete="off">
+        <select id="category-filter" class="admin-select" aria-label="Filtrar por categoría">
+          <option value="">Todas las categorías</option>
+          <option value="articulo">Artículo</option>
+          <option value="recurso-destacado">Recurso destacado</option>
+          <option value="novedad">Novedad</option>
+          <option value="noticia-consejeria">Noticia Consejería</option>
+        </select>
+        <button id="btn-new" class="admin-submit-btn" type="button">+ Nuevo post</button>
+      </div>
+
+      <p id="results-count" class="admin-results-count" aria-live="polite"></p>
+      <p id="list-error" class="admin-error-msg" hidden></p>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th scope="col">Título</th>
+              <th scope="col">Categoría</th>
+              <th scope="col">Publicado</th>
+              <th scope="col">Featured</th>
+              <th scope="col" class="admin-table-actions-col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <tr class="admin-table-empty"><td colspan="5">Cargando…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="admin-pagination">
+        <button id="btn-more" class="admin-secondary-btn" type="button" hidden>
+          Cargar más
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- Dialog crear/editar (editor + preview) -->
+  <dialog id="dialog" class="admin-dialog admin-dialog--wide" aria-labelledby="dialog-title">
+    <form id="form" method="dialog" class="admin-form admin-dialog-form" novalidate autocomplete="off">
+      <h2 id="dialog-title">Nuevo post</h2>
+      <input type="hidden" id="f-id">
+
+      <div class="admin-form-grid-2">
+        <div class="admin-form-group">
+          <label for="f-title">Título *</label>
+          <input type="text" id="f-title" required maxlength="200">
+        </div>
+        <div class="admin-form-group">
+          <label for="f-slug">Slug *</label>
+          <input type="text" id="f-slug" required maxlength="120"
+                 pattern="[a-z0-9-]+" title="Solo minúsculas, números y guiones">
+        </div>
+      </div>
+
+      <div class="admin-form-grid-2">
+        <div class="admin-form-group">
+          <label for="f-category">Categoría *</label>
+          <select id="f-category" required>
+            <option value="articulo">Artículo</option>
+            <option value="recurso-destacado">Recurso destacado</option>
+            <option value="novedad">Novedad</option>
+            <option value="noticia-consejeria">Noticia Consejería</option>
+          </select>
+        </div>
+        <div class="admin-form-group">
+          <label for="f-publishedAt">Publicado el</label>
+          <input type="datetime-local" id="f-publishedAt">
+        </div>
+      </div>
+
+      <div class="admin-form-group">
+        <label for="f-excerpt">Resumen *</label>
+        <textarea id="f-excerpt" rows="2" maxlength="500" required></textarea>
+      </div>
+
+      <div class="admin-form-group">
+        <label for="f-islands">Islas (separadas por coma) *</label>
+        <input type="text" id="f-islands" required
+               placeholder="todas o tenerife,gran-canaria,la-palma">
+      </div>
+
+      <div class="admin-form-group" data-only-consejeria hidden>
+        <label for="f-externalUrl">URL del comunicado</label>
+        <input type="url" id="f-externalUrl" maxlength="500"
+               placeholder="https://gobiernodecanarias.org/...">
+      </div>
+
+      <div class="admin-form-group">
+        <label for="f-cover">Imagen de portada</label>
+        <input type="file" id="f-cover" accept="image/*">
+        <p class="admin-form-hint" id="cover-current"></p>
+      </div>
+
+      <label class="admin-checkbox-row">
+        <input type="checkbox" id="f-featured"> Destacar en la home
+      </label>
+
+      <div class="admin-editor-row">
+        <div class="admin-form-group admin-editor-pane">
+          <label for="f-body">Cuerpo (markdown)</label>
+          <textarea id="f-body" rows="14" spellcheck="false"></textarea>
+          <p class="admin-form-hint">
+            <span id="reading-minutes">1 min lectura</span> ·
+            Allowlist: párrafos, h1-h3, listas, blockquote, código, enlaces, imágenes.
+            <code>&lt;script&gt;</code> y HTML crudo se renderizan como texto.
+          </p>
+        </div>
+        <div class="admin-editor-pane">
+          <label>Preview</label>
+          <div class="admin-preview" id="preview" aria-live="polite">
+            <p class="admin-preview__placeholder">El preview aparecerá aquí.</p>
+          </div>
+        </div>
+      </div>
+
+      <p id="form-error" class="admin-error-msg" hidden></p>
+
+      <div class="admin-dialog-actions">
+        <button type="button" id="btn-cancel" class="admin-secondary-btn">Cancelar</button>
+        <button type="submit" class="admin-submit-btn">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/js/admin.js" defer></script>
+  <script src="/js/admin-blog.js" defer></script>
+</body>
+</html>

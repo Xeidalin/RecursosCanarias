@@ -185,16 +185,28 @@ function parseCookies(req) {
 function requireAdmin(req, res) {
   const cookies = parseCookies(req);
   const token   = cookies.get(COOKIE_SESSION);
+
+  const isPage = (req.method === "GET" || req.method === "HEAD")
+    && !req.url.split("?")[0].startsWith("/api/");
+
+  function deny(message) {
+    if (isPage) {
+      res.writeHead(302, { Location: "/admin/login" });
+      res.end();
+    } else {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: message }));
+    }
+  }
+
   if (!token) {
-    res.writeHead(401, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "No autorizado" }));
+    deny("No autorizado");
     return false;
   }
   const payload = verifySession(token);
   if (!payload) {
     clearSessionCookies(res);
-    res.writeHead(401, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "Sesión expirada" }));
+    deny("Sesión expirada");
     return false;
   }
   req.admin        = payload;

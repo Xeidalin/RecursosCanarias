@@ -97,6 +97,63 @@ test("XEI-44: header == cookie == csrfFor(session) → true", () => {
   assert.equal(requireCsrf(req, res), true);
 });
 
+// ── XEI-42: requireAdmin redirige en GET, devuelve JSON 401 en API ──────────
+
+test("XEI-42: GET admin sin sesión → 302 redirect a /admin/login", async () => {
+  const req = mockReq("GET", "/admin");
+  const res = mockRes();
+  const handled = await dispatch(req, res);
+  assert.equal(handled, true);
+  assert.equal(res._status, 302);
+  assert.equal(res._headers.Location, "/admin/login");
+});
+
+test("XEI-42: GET admin sin sesión sin cookie rc_session → redirect", async () => {
+  const req = mockReq("GET", "/admin/recursos");
+  const res = mockRes();
+  await dispatch(req, res);
+  assert.equal(res._status, 302);
+  assert.equal(res._headers.Location, "/admin/login");
+});
+
+test("XEI-42: HEAD sin sesión → redirect (requireAdmin directo)", () => {
+  const { requireAdmin } = require("../server/auth.js");
+  const req = mockReq("HEAD", "/admin");
+  const res = mockRes();
+  assert.equal(requireAdmin(req, res), false);
+  assert.equal(res._status, 302);
+  assert.equal(res._headers.Location, "/admin/login");
+});
+
+test("XEI-42: POST admin sin sesión → 401 JSON (no redirect)", async () => {
+  const req = mockReq("POST", "/api/admin/logout");
+  const res = mockRes();
+  await dispatch(req, res);
+  assert.equal(res._status, 401);
+  assert.equal(res._headers["Content-Type"], "application/json");
+});
+
+test("XEI-42: GET admin con sesión expirada → 302 redirect + cookies limpias", async () => {
+  const expiredToken = signSession("admin-x");
+  // Manipular el token para que parezca expirado — usamos un token con exp en el pasado
+  const now = Date.now();
+  const expiredPayload = { adminId: "admin-x", kid: "v1", iat: now - 1000, exp: now - 1 };
+  const encoded = Buffer.from(JSON.stringify(expiredPayload)).toString("base64url");
+  const crypto = require("node:crypto");
+  const secret = process.env.SESSION_SECRET;
+  const sig = crypto.createHmac("sha256", secret).update(encoded).digest("base64url");
+  const token = `${encoded}.${sig}`;
+
+  const req = mockReq("GET", "/admin/blog");
+  req.headers["cookie"] = `rc_session=${token}`;
+  const res = mockRes();
+  await dispatch(req, res);
+  assert.equal(res._status, 302);
+  assert.equal(res._headers.Location, "/admin/login");
+  // Debe limpiar cookies
+  assert.ok(res._headers["Set-Cookie"], "debe setear cookies limpias");
+});
+
 // ── XEI-45: POST /api/admin/logout requiere sesión ─────────────────────────
 
 test("XEI-45: logout sin sesión → 401", async () => {
@@ -185,10 +242,12 @@ test("XEI-49: ruta /noticias sin template → 404, no 500", async () => {
   assert.equal(res._status, 404);
 });
 
-test("XEI-49: ruta /acerca sin template → 404, no 500", async () => {
+test("XEI-49: ruta /acerca debe devolver 200 con formulario de contacto", async () => {
   const req = mockReq("GET", "/acerca");
   const res = mockRes();
   const handled = await dispatch(req, res);
   assert.equal(handled, true);
-  assert.equal(res._status, 404);
+  assert.equal(res._status, 200);
+  assert.ok(res._body.includes("contact-form"));
+  assert.ok(res._body.includes("/legal/privacidad"));
 });

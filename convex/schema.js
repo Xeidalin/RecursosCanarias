@@ -35,6 +35,7 @@ export default defineSchema({
   })
   .index("by_slug", ["slug"])
   .index("by_created", ["createdAt"])
+  .index("by_external_created", ["isExternal", "createdAt"])
   .searchIndex("search_resources_title", {
     searchField:   "title",
     filterFields:  ["kind"],
@@ -131,5 +132,5 @@ export default defineSchema({
     type:      v.string(),
     createdAt: v.string(),
     handled:   v.boolean(),
-  }),
+  }).index("by_handled_created", ["handled", "createdAt"]),
 });

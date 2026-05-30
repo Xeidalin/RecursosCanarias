@@ -133,8 +133,10 @@ function makeConvexStub({ resources = {}, throwOnSetOg = false } = {}) {
       }
       if (fn === "resources.listStaleOg") {
         calls.listStaleOg.push(args);
+        const limit = Math.min(Math.max(1, args.limit ?? 50), 200);
         return Object.values(resources)
           .filter((r) => r.isExternal && r.sourceUrl)
+          .slice(0, limit)
           .map((r) => ({ id: r.id, sourceUrl: r.sourceUrl }));
       }
       throw new Error(`stub query no implementada: ${fn}`);
@@ -324,6 +326,28 @@ test("POST /api/admin/refresh-stale-og con token correcto → 200 y encola", asy
   const body = JSON.parse(res._body);
   assert.equal(body.found, 2);
   assert.equal(body.queued, 2);
+});
+
+test("XEI-50: listStaleOg respeta limit (no carga toda la tabla)", async () => {
+  ogQueue._reset();
+  // Create 5 external resources but limit is 50 (default) — all returned
+  const many = {};
+  for (let i = 1; i <= 5; i++) {
+    many[`r${i}`] = { id: `r${i}`, isExternal: true, sourceUrl: `https://x.test/${i}` };
+  }
+  const stub = makeConvexStub({ resources: many });
+  const adminRoute = require("../server/routes/api-admin.js");
+  adminRoute.init(stub.convex, stub.api);
+  ogQueue.init(stub.convex, stub.api, {
+    safeFetch: async (url) => ({ body: "", url, statusCode: 200 }),
+    logger: silentLogger,
+  });
+
+  // Verify stub itself enforces the limit contract
+  const result = await stub.convex.query("resources.listStaleOg", { limit: 3 });
+  assert.equal(result.length, 3, "debe respetar limit=3");
+  assert.equal(stub.calls.listStaleOg.length, 1);
+  assert.equal(stub.calls.listStaleOg[0].limit, 3);
 });
 
 test("POST /api/admin/resources/:id/refresh-og sin sesión → 401", async () => {

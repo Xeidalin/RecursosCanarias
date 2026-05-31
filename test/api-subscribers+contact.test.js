@@ -2,7 +2,7 @@
 
 process.env.SESSION_SECRET     = "test-secret-que-tiene-mas-de-32-caracteres!!";
 process.env.INTERNAL_CRON_TOKEN = "cron-token-fijo-para-tests";
-process.env.CONVEX_DEPLOY_KEY   = "dk-test-default";
+process.env.ADMIN_KEY   = "dk-test-default";
 process.env.NODE_ENV            = "test";
 
 const { test } = require("node:test");
@@ -61,7 +61,7 @@ function makeStub() {
         targetCalls.push(args);
 
         // deployKey required
-        const expectedDk = process.env.CONVEX_DEPLOY_KEY || "";
+        const expectedDk = process.env.ADMIN_KEY || "";
         if (!expectedDk || args.deployKey !== expectedDk) {
           throw new Error("No autorizado");
         }
@@ -98,7 +98,7 @@ function makeStub() {
       if (fn === "contact.listAdmin") {
         calls.listMessages.push(args);
 
-        const expectedDk = process.env.CONVEX_DEPLOY_KEY || "";
+        const expectedDk = process.env.ADMIN_KEY || "";
         if (!expectedDk || args.deployKey !== expectedDk) {
           throw new Error("No autorizado");
         }
@@ -131,7 +131,7 @@ function makeStub() {
         calls.subscribe.push(args);
 
         // Defense-in-depth: deployKey required
-        const expectedDk = process.env.CONVEX_DEPLOY_KEY || "";
+        const expectedDk = process.env.ADMIN_KEY || "";
         if (!expectedDk || args.deployKey !== expectedDk) {
           throw new Error("No autorizado");
         }
@@ -155,7 +155,7 @@ function makeStub() {
         calls.submit.push(args);
 
         // Defense-in-depth: deployKey required
-        const expectedDk = process.env.CONVEX_DEPLOY_KEY || "";
+        const expectedDk = process.env.ADMIN_KEY || "";
         if (!expectedDk || args.deployKey !== expectedDk) {
           throw new Error("No autorizado");
         }
@@ -176,7 +176,7 @@ function makeStub() {
       if (fn === "contact.markHandled") {
         calls.markHandled.push(args);
 
-        const expectedDk = process.env.CONVEX_DEPLOY_KEY || "";
+        const expectedDk = process.env.ADMIN_KEY || "";
         if (!expectedDk || args.deployKey !== expectedDk) {
           throw new Error("No autorizado");
         }
@@ -307,8 +307,8 @@ test("POST /api/subscribers re-suscribe a quien se dio de baja", async () => {
 test("POST /api/subscribers pasa deployKey a la mutation", async () => {
   const localStub = makeStub();
   subscribersRoute.init(localStub.convex, localStub.api);
-  const prev = process.env.CONVEX_DEPLOY_KEY;
-  process.env.CONVEX_DEPLOY_KEY = "dk-test";
+  const prev = process.env.ADMIN_KEY;
+  process.env.ADMIN_KEY = "dk-test";
 
   const req = mockReq("POST", "/api/subscribers", { body: { email: "dk@test.es" } });
   const res = mockRes();
@@ -317,21 +317,21 @@ test("POST /api/subscribers pasa deployKey a la mutation", async () => {
   const sent = localStub.calls.subscribe.at(-1);
   assert.equal(sent.deployKey, "dk-test");
 
-  process.env.CONVEX_DEPLOY_KEY = prev;
+  process.env.ADMIN_KEY = prev;
 });
 
-test("POST /api/subscribers sin CONVEX_DEPLOY_KEY configurada → 500 (Convex rechaza)", async () => {
+test("POST /api/subscribers sin ADMIN_KEY configurada → 500 (Convex rechaza)", async () => {
   const localStub = makeStub();
   subscribersRoute.init(localStub.convex, localStub.api);
-  const prev = process.env.CONVEX_DEPLOY_KEY;
-  delete process.env.CONVEX_DEPLOY_KEY;
+  const prev = process.env.ADMIN_KEY;
+  delete process.env.ADMIN_KEY;
 
   const req = mockReq("POST", "/api/subscribers", { body: { email: "sin-dk@test.es" } });
   const res = mockRes();
   await dispatch(req, res);
   assert.equal(res._status, 500);
 
-  process.env.CONVEX_DEPLOY_KEY = prev;
+  process.env.ADMIN_KEY = prev;
 });
 
 // ── Rate limit ────────────────────────────────────────────────────────────────
@@ -473,8 +473,8 @@ test("POST /api/contact válido con type=error → 201", async () => {
 test("POST /api/contact pasa deployKey a la mutation", async () => {
   const localStub = makeStub();
   contactRoute.init(localStub.convex, localStub.api);
-  const prev = process.env.CONVEX_DEPLOY_KEY;
-  process.env.CONVEX_DEPLOY_KEY = "dk-test-ct";
+  const prev = process.env.ADMIN_KEY;
+  process.env.ADMIN_KEY = "dk-test-ct";
 
   const req = mockReq("POST", "/api/contact", {
     body: { name: "Ana", email: "ana@test.es", type: "sugerencia", message: "Mensaje con deployKey de prueba." },
@@ -485,14 +485,14 @@ test("POST /api/contact pasa deployKey a la mutation", async () => {
   const sent = localStub.calls.submit.at(-1);
   assert.equal(sent.deployKey, "dk-test-ct");
 
-  process.env.CONVEX_DEPLOY_KEY = prev;
+  process.env.ADMIN_KEY = prev;
 });
 
-test("POST /api/contact sin CONVEX_DEPLOY_KEY configurada → 500 (Convex rechaza)", async () => {
+test("POST /api/contact sin ADMIN_KEY configurada → 500 (Convex rechaza)", async () => {
   const localStub = makeStub();
   contactRoute.init(localStub.convex, localStub.api);
-  const prev = process.env.CONVEX_DEPLOY_KEY;
-  delete process.env.CONVEX_DEPLOY_KEY;
+  const prev = process.env.ADMIN_KEY;
+  delete process.env.ADMIN_KEY;
 
   const req = mockReq("POST", "/api/contact", {
     body: { name: "Ana", email: "ana@test.es", type: "sugerencia", message: "Sin deployKey configurada." },
@@ -501,7 +501,7 @@ test("POST /api/contact sin CONVEX_DEPLOY_KEY configurada → 500 (Convex rechaz
   await dispatch(req, res);
   assert.equal(res._status, 500);
 
-  process.env.CONVEX_DEPLOY_KEY = prev;
+  process.env.ADMIN_KEY = prev;
 });
 
 // ── Rate limit ────────────────────────────────────────────────────────────────
@@ -624,8 +624,8 @@ test("GET /api/admin/subscribers con suscriptores → 200, lista ordenada", asyn
 test("GET /api/admin/subscribers pasa deployKey al query", async () => {
   const localStub = makeStub();
   subscribersRoute.init(localStub.convex, localStub.api);
-  const prev = process.env.CONVEX_DEPLOY_KEY;
-  process.env.CONVEX_DEPLOY_KEY = "dk-admin";
+  const prev = process.env.ADMIN_KEY;
+  process.env.ADMIN_KEY = "dk-admin";
 
   const req = adminReq("GET", "/api/admin/subscribers");
   const res = mockRes();
@@ -634,7 +634,7 @@ test("GET /api/admin/subscribers pasa deployKey al query", async () => {
   const sent = localStub.calls.listAdmin.at(-1);
   assert.equal(sent.deployKey, "dk-admin");
 
-  process.env.CONVEX_DEPLOY_KEY = prev;
+  process.env.ADMIN_KEY = prev;
 });
 
 // ── CSV export ─────────────────────────────────────────────────────────────────
@@ -661,8 +661,8 @@ test("GET /api/admin/subscribers/csv con sesión → 200, text/csv", async () =>
 test("GET /api/admin/subscribers/csv pasa deployKey al query", async () => {
   const localStub = makeStub();
   subscribersRoute.init(localStub.convex, localStub.api);
-  const prev = process.env.CONVEX_DEPLOY_KEY;
-  process.env.CONVEX_DEPLOY_KEY = "dk-csv";
+  const prev = process.env.ADMIN_KEY;
+  process.env.ADMIN_KEY = "dk-csv";
 
   const req = adminReq("GET", "/api/admin/subscribers/csv");
   const res = mockRes();
@@ -671,7 +671,7 @@ test("GET /api/admin/subscribers/csv pasa deployKey al query", async () => {
   const sent = localStub.calls.listAll.at(-1);
   assert.equal(sent.deployKey, "dk-csv");
 
-  process.env.CONVEX_DEPLOY_KEY = prev;
+  process.env.ADMIN_KEY = prev;
 });
 
 test("GET /api/admin/subscribers/csv neutraliza fórmula CSV en email", async () => {
@@ -751,8 +751,8 @@ test("GET /api/admin/messages con mensajes → pendientes primero", async () => 
 test("GET /api/admin/messages pasa deployKey al query", async () => {
   const localStub = makeStub();
   contactRoute.init(localStub.convex, localStub.api);
-  const prev = process.env.CONVEX_DEPLOY_KEY;
-  process.env.CONVEX_DEPLOY_KEY = "dk-msg";
+  const prev = process.env.ADMIN_KEY;
+  process.env.ADMIN_KEY = "dk-msg";
 
   const req = adminReq("GET", "/api/admin/messages");
   const res = mockRes();
@@ -761,7 +761,7 @@ test("GET /api/admin/messages pasa deployKey al query", async () => {
   const sent = localStub.calls.listMessages.at(-1);
   assert.equal(sent.deployKey, "dk-msg");
 
-  process.env.CONVEX_DEPLOY_KEY = prev;
+  process.env.ADMIN_KEY = prev;
 });
 
 // ── Mark handled ───────────────────────────────────────────────────────────────
@@ -787,8 +787,8 @@ test("POST /api/admin/messages/:id/mark-handled pasa deployKey", async () => {
     { _id: "msg-98", name: "X", email: "x@b.c", type: "otro", message: "Test", createdAt: "2026-05-01T10:00:00.000Z", handled: false, deployKey: "dk-test-default" },
   );
   contactRoute.init(localStub.convex, localStub.api);
-  const prev = process.env.CONVEX_DEPLOY_KEY;
-  process.env.CONVEX_DEPLOY_KEY = "dk-mh";
+  const prev = process.env.ADMIN_KEY;
+  process.env.ADMIN_KEY = "dk-mh";
 
   const req = adminReq("POST", "/api/admin/messages/msg-98/mark-handled");
   const res = mockRes();
@@ -797,7 +797,7 @@ test("POST /api/admin/messages/:id/mark-handled pasa deployKey", async () => {
   const sent = localStub.calls.markHandled.at(-1);
   assert.equal(sent.deployKey, "dk-mh");
 
-  process.env.CONVEX_DEPLOY_KEY = prev;
+  process.env.ADMIN_KEY = prev;
 });
 
 

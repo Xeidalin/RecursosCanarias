@@ -117,7 +117,7 @@ router.post("/api/admin/blog", async (req, res) => {
     await resolveCoverStorage(body);
     const err = validateCreate(body);
     if (err) { sendJson(res, 400, { error: err }); return; }
-    body.deployKey = process.env.CONVEX_DEPLOY_KEY || "";
+    body.deployKey = process.env.ADMIN_KEY || "";
     const post = await _convex.mutation(_api.blog.create, body);
     sendJson(res, 201, post);
   } catch (err) {
@@ -167,7 +167,7 @@ router.patch("/api/admin/blog/:id", async (req, res) => {
     }
 
     const post = await _convex.mutation(_api.blog.update, {
-      id, ...body, deployKey: process.env.CONVEX_DEPLOY_KEY || "",
+      id, ...body, deployKey: process.env.ADMIN_KEY || "",
     });
     sendJson(res, 200, post);
   } catch (err) {
@@ -182,7 +182,7 @@ router.delete("/api/admin/blog/:id", async (req, res) => {
   if (!id) { sendJson(res, 400, { error: "Falta id" }); return; }
   try {
     const result = await _convex.mutation(_api.blog.remove, {
-      id, deployKey: process.env.CONVEX_DEPLOY_KEY || "",
+      id, deployKey: process.env.ADMIN_KEY || "",
     });
     sendJson(res, 200, result);
   } catch (err) {
@@ -214,7 +214,7 @@ router.post("/api/admin/blog/preview-markdown", async (req, res) => {
 router.post("/api/admin/blog/upload-cover", async (req, res) => {
   try {
     const uploadUrl = await _convex.mutation(_api.storage.generateUploadUrl, {
-      deployKey: process.env.CONVEX_DEPLOY_KEY || "",
+      deployKey: process.env.ADMIN_KEY || "",
     });
     sendJson(res, 200, { uploadUrl });
   } catch (err) {

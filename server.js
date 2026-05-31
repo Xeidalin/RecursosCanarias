@@ -1,6 +1,7 @@
 const path = require("node:path");
-require("dotenv").config({ path: path.join(__dirname, ".env.local") });
-require("dotenv").config();
+// dotenv is only needed for local development
+try { require("dotenv").config({ path: path.join(__dirname, ".env.local") }); } catch {}
+try { require("dotenv").config(); } catch {}
 
 const http = require("node:http");
 const fs   = require("node:fs/promises");
@@ -19,8 +20,8 @@ if (!CONVEX_URL) {
   process.exit(1);
 }
 
-if (!process.env.CONVEX_DEPLOY_KEY) {
-  console.error("Falta CONVEX_DEPLOY_KEY en .env.local. Debe coincidir con la variable configurada en Convex (`npx convex env set CONVEX_DEPLOY_KEY <valor>`).");
+if (!process.env.ADMIN_KEY) {
+  console.error("Falta ADMIN_KEY en .env.local. Debe coincidir con la variable configurada en Convex (`npx convex env set ADMIN_KEY <valor>`).");
   process.exit(1);
 }
 

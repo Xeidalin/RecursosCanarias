@@ -21,9 +21,9 @@ async function main() {
     process.exit(1);
   }
 
-  const deployKey = process.env.CONVEX_DEPLOY_KEY;
+  const deployKey = process.env.ADMIN_KEY;
   if (!deployKey) {
-    console.error("Falta CONVEX_DEPLOY_KEY en .env.local");
+    console.error("Falta ADMIN_KEY en .env.local");
     process.exit(1);
   }
 

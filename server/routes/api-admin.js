@@ -38,7 +38,7 @@ router.post("/api/admin/login", async (req, res) => {
 
     const admin = await _convex.query(_api.admins.getByUsername, {
       username: String(username),
-      deployKey: process.env.CONVEX_DEPLOY_KEY || "",
+      deployKey: process.env.ADMIN_KEY || "",
     });
 
     // Always run scrypt to avoid timing oracle — use dummy values when admin not found
@@ -89,7 +89,7 @@ router.post("/api/admin/refresh-stale-og", async (req, res) => {
 // GET /api/admin/stats — dashboard metrics (admin session required)
 router.get("/api/admin/stats", async (req, res) => {
   try {
-    const stats = await _convex.query(_api.tracking.getStats, { deployKey: process.env.CONVEX_DEPLOY_KEY || "" });
+    const stats = await _convex.query(_api.tracking.getStats, { deployKey: process.env.ADMIN_KEY || "" });
     sendJson(res, 200, stats);
   } catch (err) {
     sendJson(res, 500, { error: "No se pudieron cargar las estadísticas." });

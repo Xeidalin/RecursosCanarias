@@ -42,7 +42,7 @@ function isValidExternalUrl(url) {
 }
 
 function requireDeployKey(deployKey) {
-  const expected = process.env.CONVEX_DEPLOY_KEY;
+  const expected = process.env.ADMIN_KEY;
   if (!expected || deployKey !== expected) {
     throw new Error("No autorizado");
   }

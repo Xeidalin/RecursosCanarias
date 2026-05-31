@@ -408,7 +408,7 @@ test("PATCH /api/admin/blog/:id rechaza externalUrl no segura → 400", async ()
 test("POST pasa deployKey a la mutation", async () => {
   const stub = makeStub();
   blogRoute.init(stub.convex, stub.api);
-  process.env.CONVEX_DEPLOY_KEY = "dk-test";
+  process.env.ADMIN_KEY = "dk-test";
   const req = adminReq("POST", "/api/admin/blog", {
     body: {
       title: "x", slug: "x", category: "articulo", excerpt: "x",
@@ -420,13 +420,13 @@ test("POST pasa deployKey a la mutation", async () => {
   assert.equal(res._status, 201);
   const sent = stub.calls.create.at(-1);
   assert.equal(sent.deployKey, "dk-test");
-  delete process.env.CONVEX_DEPLOY_KEY;
+  delete process.env.ADMIN_KEY;
 });
 
 test("PATCH pasa deployKey y el body no lo sobreescribe", async () => {
   const stub = makeStub({ posts: { "p1": { id: "p1", title: "x", slug: "x", category: "articulo", excerpt: "e", islands: ["todas"] } } });
   blogRoute.init(stub.convex, stub.api);
-  process.env.CONVEX_DEPLOY_KEY = "dk-real";
+  process.env.ADMIN_KEY = "dk-real";
   const req = adminReq("PATCH", "/api/admin/blog/p1", {
     body: { title: "nuevo", deployKey: "dk-malicioso" },
   });
@@ -435,20 +435,20 @@ test("PATCH pasa deployKey y el body no lo sobreescribe", async () => {
   assert.equal(res._status, 200);
   const sent = stub.calls.update.at(-1);
   assert.equal(sent.deployKey, "dk-real");
-  delete process.env.CONVEX_DEPLOY_KEY;
+  delete process.env.ADMIN_KEY;
 });
 
 test("DELETE pasa deployKey a la mutation", async () => {
   const stub = makeStub({ posts: { "p1": { id: "p1", title: "x" } } });
   blogRoute.init(stub.convex, stub.api);
-  process.env.CONVEX_DEPLOY_KEY = "dk-test";
+  process.env.ADMIN_KEY = "dk-test";
   const req = adminReq("DELETE", "/api/admin/blog/p1");
   const res = mockRes();
   await dispatch(req, res);
   assert.equal(res._status, 200);
   const sent = stub.calls.remove.at(-1);
   assert.equal(sent.deployKey, "dk-test");
-  delete process.env.CONVEX_DEPLOY_KEY;
+  delete process.env.ADMIN_KEY;
 });
 
 // ── Upload cover ──────────────────────────────────────────────────────────

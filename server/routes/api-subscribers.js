@@ -34,7 +34,7 @@ router.post("/api/subscribers", async (req, res) => {
 
     const result = await _convex.mutation(_api.subscribers.subscribe, {
       email:     raw.toLowerCase(),
-      deployKey: process.env.CONVEX_DEPLOY_KEY || "",
+      deployKey: process.env.ADMIN_KEY || "",
     });
     sendJson(res, 200, result);
   } catch (err) {
@@ -53,7 +53,7 @@ function escapeCsvField(val) {
 }
 
 function deployKey() {
-  return process.env.CONVEX_DEPLOY_KEY || "";
+  return process.env.ADMIN_KEY || "";
 }
 
 // GET /api/admin/subscribers

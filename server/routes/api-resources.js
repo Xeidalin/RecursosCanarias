@@ -123,7 +123,7 @@ router.get("/api/admin/resources", async (req, res) => {
 router.post("/api/admin/resources/upload-url", async (req, res) => {
   try {
     const uploadUrl = await _convex.mutation(_api.storage.generateUploadUrl, {
-      deployKey: process.env.CONVEX_DEPLOY_KEY || "",
+      deployKey: process.env.ADMIN_KEY || "",
     });
     sendJson(res, 200, { uploadUrl });
   } catch (err) {

@@ -56,7 +56,7 @@ router.post("/api/contact", async (req, res) => {
       email: email.toLowerCase(),
       message,
       type: body.type,
-      deployKey: process.env.CONVEX_DEPLOY_KEY || "",
+      deployKey: process.env.ADMIN_KEY || "",
     });
     sendJson(res, 201, result);
   } catch (err) {
@@ -66,7 +66,7 @@ router.post("/api/contact", async (req, res) => {
 }, { public: true });
 
 function deployKey() {
-  return process.env.CONVEX_DEPLOY_KEY || "";
+  return process.env.ADMIN_KEY || "";
 }
 
 // GET /api/admin/messages

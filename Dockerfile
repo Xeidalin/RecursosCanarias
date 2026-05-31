@@ -2,8 +2,13 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-COPY package.json ./
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
 COPY server.js ./
+COPY convex ./convex
+COPY server ./server
+COPY scripts ./scripts
 COPY public ./public
 COPY data ./data
 

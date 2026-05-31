@@ -53,9 +53,10 @@ const loadMoreBtn = document.getElementById("blog-load-more");
 if (listEl) {
   let cursor  = null;
   let loading = false;
+  let isDone  = false;
 
   async function loadPosts(append = false) {
-    if (loading) return;
+    if (loading || (append && isDone)) return;
     loading = true;
     const params = new URLSearchParams({ limit: "12" });
     if (cursor) params.set("cursor", cursor);
@@ -65,9 +66,9 @@ if (listEl) {
     if (cat) params.set("category", cat);
 
     try {
-      const r    = await fetch(`/api/blog?${params}`);
-      const data = r.ok ? await r.json() : [];
-      const posts = Array.isArray(data) ? data : [];
+      const r      = await fetch(`/api/blog?${params}`);
+      const data   = await r.json();
+      const posts  = Array.isArray(data.items) ? data.items : [];
 
       if (!append) listEl.innerHTML = "";
 
@@ -77,10 +78,10 @@ if (listEl) {
         listEl.insertAdjacentHTML("beforeend", posts.map(blogCardHtml).join(""));
       }
 
-      // Simple cursor: if we got a full page, show load-more
       if (loadMoreBtn) {
-        cursor             = posts.length === 12 ? String(posts.length) : null;
-        loadMoreBtn.hidden = !cursor;
+        cursor             = data.nextCursor || null;
+        isDone             = data.isDone === true;
+        loadMoreBtn.hidden = !cursor || isDone;
       }
     } catch {
       if (!append) {

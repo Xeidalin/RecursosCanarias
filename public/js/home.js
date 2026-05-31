@@ -114,7 +114,8 @@ async function loadBlogPosts() {
 
   try {
     const r     = await fetch("/api/blog?limit=3");
-    const posts = r.ok ? await r.json() : [];
+    const data   = r.ok ? await r.json() : {};
+    const posts  = Array.isArray(data.items) ? data.items : [];
 
     if (posts.length === 0) {
       container.innerHTML = '<p class="home-empty">Próximamente publicaremos novedades.</p>';

@@ -5,6 +5,13 @@ function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function requireDeployKey(deployKey) {
+  const expected = process.env.CONVEX_DEPLOY_KEY;
+  if (!expected || deployKey !== expected) {
+    throw new Error("No autorizado");
+  }
+}
+
 // POST /api/track llama a esta mutación
 export const record = mutation({
   args: { path: v.string() },
@@ -25,8 +32,15 @@ export const record = mutation({
 
 // GET /api/admin/stats — estadísticas para el dashboard
 export const getStats = query({
-  args: {},
-  handler: async (ctx) => {
+  args: { deployKey: v.string() },
+  handler: async (ctx, { deployKey }) => {
+    requireDeployKey(deployKey);
+
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
+    const today = todayISO();
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+    const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+
     // Total resources
     const allResources = await ctx.db.query("resources").collect();
 
@@ -44,12 +58,11 @@ export const getStats = query({
     const messages = await ctx.db.query("contactMessages").collect();
     const unhandled = messages.filter((m) => !m.handled).length;
 
-    // Page views: today, yesterday, last 7 days, last 30 days
-    const allViews = await ctx.db.query("pageViews").collect();
-    const today = todayISO();
-    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-    const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
+    // Page views: only query last 30 days via index (avoids unbounded collect)
+    const allViews = await ctx.db
+      .query("pageViews")
+      .withIndex("by_day_path", (q) => q.gte("day", thirtyDaysAgo))
+      .collect();
 
     let viewsToday = 0, viewsYesterday = 0, views7d = 0, views30d = 0;
     const topPages = new Map();
@@ -58,7 +71,7 @@ export const getStats = query({
       if (v.day === today) viewsToday += v.count;
       if (v.day === yesterday) viewsYesterday += v.count;
       if (v.day >= sevenDaysAgo) views7d += v.count;
-      if (v.day >= thirtyDaysAgo) views30d += v.count;
+      views30d += v.count;
 
       const curr = topPages.get(v.path) || 0;
       topPages.set(v.path, curr + v.count);

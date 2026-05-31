@@ -7,10 +7,11 @@
 
   try {
     const r  = await fetch("/api/blog?category=noticia-consejeria&limit=20");
-    const posts = await r.json();
+    const data = await r.json();
+    const posts = Array.isArray(data.items) ? data.items : [];
     loading?.remove();
 
-    if (!Array.isArray(posts) || posts.length === 0) {
+    if (posts.length === 0) {
       grid.innerHTML = "<p>No hay noticias de la Consejería en este momento.</p>";
       return;
     }

@@ -42,13 +42,22 @@ router.get("/sitemap.xml", async (req, res) => {
     urls.push(urlEntry(`${BASE}/islas/${slug}`,                    { priority: "0.6" }));
   }
 
-  // Dynamic: blog posts
+  // Dynamic: blog posts (paginate to get all published, not just first 200)
   if (_convex && _api) {
     try {
-      const posts = await _convex.query(_api.blog.list, { limit: 200 });
-      for (const p of posts) {
-        urls.push(urlEntry(`${BASE}/blog/${encodeURI(p.slug)}`,    { priority: "0.7" }));
-      }
+      let cursor = null;
+      let fetched = 0;
+      const MAX = 5000; // safety valve
+      do {
+        const page = await _convex.query(_api.blog.list, {
+          paginationOpts: { numItems: 100, cursor },
+        });
+        for (const p of page.items) {
+          urls.push(urlEntry(`${BASE}/blog/${encodeURI(p.slug)}`, { priority: "0.7" }));
+        }
+        cursor = page.nextCursor;
+        fetched += page.items.length;
+      } while (cursor && fetched < MAX);
     } catch { /* Convex unavailable */ }
   }
 

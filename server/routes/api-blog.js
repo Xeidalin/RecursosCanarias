@@ -42,11 +42,15 @@ async function resolveCoverStorage(body) {
 // GET /api/blog
 router.get("/api/blog", async (req, res) => {
   const params   = new URL(req.url, "http://x").searchParams;
-  const limit    = Math.min(Math.max(1, parseInt(params.get("limit") || "20", 10)), 100);
+  const limit    = Math.min(Math.max(1, parseInt(params.get("limit") || "12", 10)), 100);
   const category = params.get("category") || undefined;
+  const cursor   = params.get("cursor")   || null;
 
-  const posts = await _convex.query(_api.blog.list, { limit, category });
-  sendJson(res, 200, posts);
+  const result = await _convex.query(_api.blog.list, {
+    paginationOpts: { numItems: limit, cursor },
+    category,
+  });
+  sendJson(res, 200, result);
 }, { public: true });
 
 // GET /api/blog/:slug

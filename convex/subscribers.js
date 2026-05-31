@@ -77,10 +77,9 @@ export const generateToken = mutation({
       .unique();
     if (!sub || sub.unsubscribedAt) return null;
 
-    const token = Array.from(
-      { length: 32 },
-      () => "abcdefghijklmnopqrstuvwxyz0123456789"[Math.floor(Math.random() * 36)]
-    ).join("");
+    const ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789";
+    const bytes   = crypto.getRandomValues(new Uint8Array(32));
+    const token   = Array.from(bytes, (b) => ALPHABET[b % ALPHABET.length]).join("");
 
     await ctx.db.insert("unsubscribeTokens", {
       token,

@@ -89,7 +89,7 @@ router.post("/api/admin/refresh-stale-og", async (req, res) => {
 // GET /api/admin/stats — dashboard metrics (admin session required)
 router.get("/api/admin/stats", async (req, res) => {
   try {
-    const stats = await _convex.query(_api.tracking.getStats, {});
+    const stats = await _convex.query(_api.tracking.getStats, { deployKey: process.env.CONVEX_DEPLOY_KEY || "" });
     sendJson(res, 200, stats);
   } catch (err) {
     sendJson(res, 500, { error: "No se pudieron cargar las estadísticas." });

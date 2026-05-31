@@ -52,17 +52,26 @@ function requireDeployKey(deployKey) {
 
 export const list = query({
   args: {
-    limit:    v.optional(v.number()),
-    category: v.optional(v.string()),
+    paginationOpts: paginationOptsValidator,
+    category:       v.optional(CATEGORY_VALUES),
   },
-  handler: async (ctx, { limit = 20, category }) => {
-    const docs = await ctx.db
-      .query("blogPosts")
-      .withIndex("by_published")
-      .order("desc")
-      .collect();
-    const filtered = category ? docs.filter((d) => d.category === category) : docs;
-    return filtered.slice(0, limit).map(toApi);
+  handler: async (ctx, args) => {
+    let q;
+    if (args.category) {
+      q = ctx.db.query("blogPosts")
+        .withIndex("by_category_published", (b) => b.eq("category", args.category))
+        .order("desc");
+    } else {
+      q = ctx.db.query("blogPosts")
+        .withIndex("by_published")
+        .order("desc");
+    }
+    const result = await q.paginate(args.paginationOpts);
+    return {
+      items: result.page.map(toApi),
+      nextCursor: result.continueCursor,
+      isDone: result.isDone,
+    };
   },
 });
 

@@ -1,6 +1,13 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
+function requireDeployKey(deployKey) {
+  const expected = process.env.CONVEX_DEPLOY_KEY;
+  if (!expected || deployKey !== expected) {
+    throw new Error("No autorizado");
+  }
+}
+
 export const getBySlug = query({
   args: { slug: v.string() },
   handler: async (ctx, { slug }) => {
@@ -20,13 +27,15 @@ export const list = query({
 
 export const upsert = mutation({
   args: {
-    slug:    v.string(),
-    name:    v.string(),
-    intro:   v.string(),
-    nature:  v.string(),
-    culture: v.string(),
+    slug:      v.string(),
+    name:      v.string(),
+    intro:     v.string(),
+    nature:    v.string(),
+    culture:   v.string(),
+    deployKey: v.string(),
   },
   handler: async (ctx, args) => {
+    requireDeployKey(args.deployKey);
     const existing = await ctx.db
       .query("islandPages")
       .withIndex("by_slug", (q) => q.eq("slug", args.slug))

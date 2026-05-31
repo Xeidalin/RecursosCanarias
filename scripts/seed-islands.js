@@ -61,6 +61,12 @@ const ISLANDS = [
 ];
 
 async function main() {
+  const deployKey = process.env.CONVEX_DEPLOY_KEY;
+  if (!deployKey) {
+    console.error("Falta CONVEX_DEPLOY_KEY en .env.local");
+    process.exit(1);
+  }
+
   const convexUrl = process.env.CONVEX_URL;
   if (!convexUrl) {
     console.error("Falta CONVEX_URL en .env.local");
@@ -73,7 +79,7 @@ async function main() {
 
   for (const island of ISLANDS) {
     try {
-      await convex.mutation(api.islandPages.upsert, island);
+      await convex.mutation(api.islandPages.upsert, { ...island, deployKey });
       console.log(`  ✓ ${island.name}`);
     } catch (err) {
       console.error(`  ✗ ${island.name}: ${err.message}`);

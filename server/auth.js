@@ -12,7 +12,7 @@ const COOKIE_CSRF       = "rc_csrf";
 
 function getSecret() {
   const s = process.env.SESSION_SECRET;
-  if (!s || s.length < 16) throw new Error("SESSION_SECRET no configurado o demasiado corto");
+  if (!s || s.length < 32) throw new Error("SESSION_SECRET no configurado o demasiado corto (mín 32 caracteres)");
   return s;
 }
 

@@ -21,6 +21,12 @@ async function main() {
     process.exit(1);
   }
 
+  const deployKey = process.env.CONVEX_DEPLOY_KEY;
+  if (!deployKey) {
+    console.error("Falta CONVEX_DEPLOY_KEY en .env.local");
+    process.exit(1);
+  }
+
   const convexUrl = process.env.CONVEX_URL;
   if (!convexUrl) {
     console.error("Falta CONVEX_URL en .env.local");
@@ -40,6 +46,7 @@ async function main() {
       username,
       passwordHash: hash,
       salt,
+      deployKey,
     });
 
     console.log(`✓ Admin '${username}' creado con id ${id}`);

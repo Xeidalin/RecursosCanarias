@@ -63,8 +63,22 @@ function isPrivateIp(address, family) {
     if (addr.startsWith("ff"))                      return true;  // Multicast ff00::/8
     // Documentation 2001:db8::/32 (RFC 3849) — consistente con bloqueo IPv4 TEST-NETs
     if (addr.startsWith("2001:db8:") || addr.startsWith("2001:0db8:")) return true;
-    const v4m = addr.match(/^::ffff:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/);
-    if (v4m) return isPrivateIp(v4m[1], 4);                       // IPv4-mapped
+
+    // IPv4-mapped IPv6: ::ffff:d.d.d.d (dotted-decimal) and ::ffff:xxxx:xxxx (hex)
+    let v4m = addr.match(/^::ffff:(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+    if (v4m) return isPrivateIp(`${v4m[1]}.${v4m[2]}.${v4m[3]}.${v4m[4]}`, 4);
+    // Expanded form: 0:0:0:0:0:ffff:x.x.x.x or 0:0:0:0:0:ffff:xxxx:xxxx
+    v4m = addr.match(/^(?:0:){4}0:ffff:(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+    if (v4m) return isPrivateIp(`${v4m[1]}.${v4m[2]}.${v4m[3]}.${v4m[4]}`, 4);
+    // Hex IPv4-mapped: ::ffff:xxxx:xxxx (last 32 bits = IPv4)
+    const hexM = addr.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/);
+    if (hexM) {
+      const lo = parseInt(hexM[2], 16);
+      const hi = parseInt(hexM[1], 16);
+      const ip4 = `${(hi >> 8) & 0xff}.${hi & 0xff}.${(lo >> 8) & 0xff}.${lo & 0xff}`;
+      return isPrivateIp(ip4, 4);
+    }
+
     return false;
   }
 

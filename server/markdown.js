@@ -206,14 +206,20 @@ function render(markdown) {
       continue;
     }
 
-    // Paragraph — collect until blank line
+    // Paragraph — collect until blank line or start of next block
     const paraLines = [];
     while (i < lines.length && !/^\s*$/.test(peek()) &&
-           !/^(#{1,3}|> |[-*+] |\d+\. |```|-{3,}|\*{3,})/.test(peek())) {
-      paraLines.push(consume().trim());
+           !/^(#{1,3}\s|> |[-*+] |\d+\. |```|-{3,}|\*{3,})/.test(peek())) {
+      const l = consume().trim();
+      if (l) paraLines.push(l);
     }
     if (paraLines.length) {
       out.push(`<p>${renderInline(paraLines.join(" "))}</p>`);
+      continue;
+    }
+    // Safety: consume one line if nothing matched to prevent infinite loop
+    if (i < lines.length && peek() !== undefined) {
+      consume();
     }
   }
 

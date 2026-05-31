@@ -36,7 +36,10 @@ router.post("/api/admin/login", async (req, res) => {
     const rateLimitKey = `${ip}:${String(username).slice(0, 64)}`;
     if (!limiters.login.consume(req, res, rateLimitKey)) return;
 
-    const admin = await _convex.query(_api.admins.getByUsername, { username: String(username) });
+    const admin = await _convex.query(_api.admins.getByUsername, {
+      username: String(username),
+      deployKey: process.env.CONVEX_DEPLOY_KEY || "",
+    });
 
     // Always run scrypt to avoid timing oracle — use dummy values when admin not found
     const dummySalt = "0".repeat(64);

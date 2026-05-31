@@ -209,7 +209,9 @@ router.post("/api/admin/blog/preview-markdown", async (req, res) => {
 // POST /api/admin/blog/upload-cover — genera URL de subida para portadas
 router.post("/api/admin/blog/upload-cover", async (req, res) => {
   try {
-    const uploadUrl = await _convex.mutation(_api.storage.generateUploadUrl, {});
+    const uploadUrl = await _convex.mutation(_api.storage.generateUploadUrl, {
+      deployKey: process.env.CONVEX_DEPLOY_KEY || "",
+    });
     sendJson(res, 200, { uploadUrl });
   } catch (err) {
     sendJson(res, 500, { error: "No se pudo generar URL de subida." });

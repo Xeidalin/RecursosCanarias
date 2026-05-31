@@ -122,7 +122,9 @@ router.get("/api/admin/resources", async (req, res) => {
 // POST /api/admin/resources/upload-url — genera URL de subida Convex Storage
 router.post("/api/admin/resources/upload-url", async (req, res) => {
   try {
-    const uploadUrl = await _convex.mutation(_api.storage.generateUploadUrl, {});
+    const uploadUrl = await _convex.mutation(_api.storage.generateUploadUrl, {
+      deployKey: process.env.CONVEX_DEPLOY_KEY || "",
+    });
     sendJson(res, 200, { uploadUrl });
   } catch (err) {
     sendJson(res, 500, { error: "No se pudo generar URL de subida." });

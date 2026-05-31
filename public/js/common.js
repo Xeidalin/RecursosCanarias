@@ -120,6 +120,15 @@ document.getElementById("subscribe-form")?.addEventListener("submit", async (e) 
   }
 });
 
+// ─── Skip-link target ──────────────────────────────────────────────────────────
+(function setupSkipTarget() {
+  const main = document.querySelector("main");
+  if (main && !main.id) {
+    main.id = "main-content";
+    main.tabIndex = -1;
+  }
+})();
+
 // ─── Tracking beacon ──────────────────────────────────────────────────────────
 (function beacon() {
   const body = JSON.stringify({ path: location.pathname });

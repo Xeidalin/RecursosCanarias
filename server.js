@@ -19,6 +19,11 @@ if (!CONVEX_URL) {
   process.exit(1);
 }
 
+if (!process.env.CONVEX_DEPLOY_KEY) {
+  console.error("Falta CONVEX_DEPLOY_KEY en .env.local. Debe coincidir con la variable configurada en Convex (`npx convex env set CONVEX_DEPLOY_KEY <valor>`).");
+  process.exit(1);
+}
+
 const convex = new ConvexHttpClient(CONVEX_URL);
 
 // OG fetch queue — inicializar antes que los routes que la usan
@@ -34,6 +39,21 @@ adminRoute.init(convex, api);
 
 const blogRoute = require("./server/routes/api-blog.js");
 blogRoute.init(convex, api);
+
+const subscribersRoute = require("./server/routes/api-subscribers.js");
+subscribersRoute.init(convex, api);
+
+const contactRoute = require("./server/routes/api-contact.js");
+contactRoute.init(convex, api);
+
+const searchRoute = require("./server/routes/api-search.js");
+searchRoute.init(convex, api);
+
+const trackRoute = require("./server/routes/api-track.js");
+trackRoute.init(convex, api);
+
+const sitemapRoute = require("./server/routes/sitemap.js");
+sitemapRoute.init(convex, api);
 
 const pagesRoute = require("./server/routes/pages.js");
 pagesRoute.init(convex, api);

@@ -105,6 +105,7 @@ export const listFiltered = query({
     q:       v.optional(v.string()),
     cursor:  v.optional(v.string()),
     limit:   v.optional(v.number()),
+    hasFile: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const limit     = Math.min(args.limit ?? 24, 100);
@@ -160,6 +161,11 @@ export const listFiltered = query({
       if (args.kind) {
         docs = docs.filter((d) => d.kind === args.kind);
       }
+    }
+
+    // Step 4a2: optional hasFile filter (only resources with fileUrl)
+    if (args.hasFile) {
+      docs = docs.filter((d) => d.fileUrl && d.fileUrl.trim());
     }
 
     // Step 4b: sort by creationTime desc, tie-break _id asc.
@@ -392,6 +398,16 @@ const SEED_ITEM = v.object({
   views:       v.optional(v.number()),
   downloads:   v.optional(v.number()),
   createdAt:   v.optional(v.string()),
+});
+
+export const recordDownload = mutation({
+  args: { id: v.id("resources") },
+  handler: async (ctx, { id }) => {
+    const doc = await ctx.db.get(id);
+    if (!doc) throw new Error("Recurso no encontrado");
+    await ctx.db.patch(id, { downloads: (doc.downloads || 0) + 1 });
+    return { downloads: (doc.downloads || 0) + 1 };
+  },
 });
 
 export const seedV2 = mutation({

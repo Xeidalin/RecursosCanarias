@@ -3,6 +3,7 @@
 const { router } = require("../router.js");
 const { sendJson, readBody } = require("../http.js");
 const { render: renderMarkdown } = require("../markdown.js");
+const { safeUrl } = require("../sanitize.js");
 
 const VALID_CATEGORIES = new Set([
   "articulo", "recurso-destacado", "novedad", "noticia-consejeria",
@@ -67,6 +68,9 @@ function validateCreate(body) {
   });
   if (missing.length) return `Faltan campos obligatorios: ${missing.join(", ")}`;
   if (!VALID_CATEGORIES.has(body.category)) return "category inválida";
+  if (typeof body.externalUrl === "string" && body.externalUrl.trim()) {
+    if (!safeUrl(body.externalUrl.trim())) return "externalUrl no es una URL segura";
+  }
   if (typeof body.body === "string" && body.body.length > MAX_BODY_CHARS) {
     return `body excede el límite (${MAX_BODY_CHARS} chars)`;
   }
@@ -83,13 +87,19 @@ router.get("/api/admin/blog", async (req, res) => {
       return;
     }
     const args = {
-      limit:    Math.min(Math.max(1, parseInt(p.get("limit") || "20", 10)), 100),
-      cursor:   p.get("cursor") || undefined,
+      paginationOpts: {
+        numItems: Math.min(Math.max(1, parseInt(p.get("limit") || "20", 10)), 100),
+        cursor:   p.get("cursor") || null,
+      },
       q:        p.get("q")      || undefined,
       category: rawCategory     || undefined,
     };
     const result = await _convex.query(_api.blog.listAdmin, args);
-    sendJson(res, 200, result);
+    sendJson(res, 200, {
+      items: result.items,
+      nextCursor: result.continueCursor,
+      isDone: result.isDone,
+    });
   } catch (err) {
     const status = err.status || 500;
     sendJson(res, status, { error: err.message || "Error al listar." });
@@ -103,6 +113,7 @@ router.post("/api/admin/blog", async (req, res) => {
     await resolveCoverStorage(body);
     const err = validateCreate(body);
     if (err) { sendJson(res, 400, { error: err }); return; }
+    body.deployKey = process.env.CONVEX_DEPLOY_KEY || "";
     const post = await _convex.mutation(_api.blog.create, body);
     sendJson(res, 201, post);
   } catch (err) {
@@ -124,13 +135,36 @@ router.patch("/api/admin/blog/:id", async (req, res) => {
       sendJson(res, 400, { error: "category inválida" });
       return;
     }
+    if (typeof body.externalUrl === "string" && body.externalUrl.trim()) {
+      if (!safeUrl(body.externalUrl.trim())) {
+        sendJson(res, 400, { error: "externalUrl no es una URL segura" });
+        return;
+      }
+    }
     if (typeof body.body === "string" && body.body.length > MAX_BODY_CHARS) {
       sendJson(res, 400, { error: `body excede el límite (${MAX_BODY_CHARS} chars)` });
       return;
     }
     const prev = await _convex.query(_api.blog.getById, { id });
     if (!prev) { sendJson(res, 404, { error: "Post no encontrado" }); return; }
-    const post = await _convex.mutation(_api.blog.update, { id, ...body });
+
+    // Rechazar campos obligatorios que se intenten vaciar
+    if (body.title !== undefined && (!body.title || !body.title.trim())) {
+      sendJson(res, 400, { error: "title no puede estar vacío" }); return;
+    }
+    if (body.slug !== undefined && (!body.slug || !body.slug.trim())) {
+      sendJson(res, 400, { error: "slug no puede estar vacío" }); return;
+    }
+    if (body.excerpt !== undefined && (!body.excerpt || !body.excerpt.trim())) {
+      sendJson(res, 400, { error: "excerpt no puede estar vacío" }); return;
+    }
+    if (body.islands !== undefined && (!Array.isArray(body.islands) || body.islands.length === 0)) {
+      sendJson(res, 400, { error: "islands no puede estar vacío" }); return;
+    }
+
+    const post = await _convex.mutation(_api.blog.update, {
+      id, ...body, deployKey: process.env.CONVEX_DEPLOY_KEY || "",
+    });
     sendJson(res, 200, post);
   } catch (err) {
     const status = err.status || 400;
@@ -143,7 +177,9 @@ router.delete("/api/admin/blog/:id", async (req, res) => {
   const id = req.params?.id;
   if (!id) { sendJson(res, 400, { error: "Falta id" }); return; }
   try {
-    const result = await _convex.mutation(_api.blog.remove, { id });
+    const result = await _convex.mutation(_api.blog.remove, {
+      id, deployKey: process.env.CONVEX_DEPLOY_KEY || "",
+    });
     sendJson(res, 200, result);
   } catch (err) {
     const status = err.status || 400;

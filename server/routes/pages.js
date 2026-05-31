@@ -36,9 +36,17 @@ async function renderPage(res, filePath, data) {
 }
 
 function pageData(overrides = {}) {
+  const title = overrides.pageTitle || "Recursos Canarias";
+  const desc  = overrides.metaDescription || "Recursos educativos para docentes de las Islas Canarias.";
+  const url   = overrides.canonicalUrl || "https://recursoscanarias.site";
   return {
-    pageTitle:       "Recursos Canarias",
-    metaDescription: "Recursos educativos para docentes de las Islas Canarias.",
+    pageTitle:       title,
+    metaDescription: desc,
+    ogTitle:         overrides.ogTitle || title,
+    ogDescription:   overrides.ogDescription || desc,
+    ogUrl:           url,
+    ogImage:         overrides.ogImage || "https://recursoscanarias.site/og-default.png",
+    canonicalUrl:    url,
     year:            String(new Date().getFullYear()),
     ...overrides,
   };

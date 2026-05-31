@@ -69,7 +69,7 @@ function renderInline(text) {
         if (closeParen !== -1) {
           const alt     = text.slice(i + 2, closeAlt);
           const rawHref = text.slice(closeAlt + 2, closeParen).split(/\s+/)[0];
-          const href    = safeUrl(rawHref);
+          const href    = safeUrl(rawHref, "img");
           if (href) {
             out += `<img src="${escapeHtml(href)}" alt="${escapeHtml(alt)}" loading="lazy">`;
           }

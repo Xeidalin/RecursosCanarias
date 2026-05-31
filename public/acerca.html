@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+{{>head}}
+<body>
+{{>header}}
+
+  <main>
+
+    <section class="home-section" aria-labelledby="about-title">
+      <h1 id="about-title">Acerca de Recursos Canarias</h1>
+
+      <div class="legal-body">
+        <h2>Nuestra historia</h2>
+        <p>Recursos Canarias nace con la vocación de reunir, organizar y difundir materiales educativos que pongan en valor la riqueza natural, cultural e histórica de las Islas Canarias. Creemos que la mejor forma de cuidar nuestro patrimonio es conocerlo, y la mejor forma de conocerlo es enseñarlo.</p>
+        <p>Este proyecto está impulsado por docentes que entienden el aula como un espacio vivo, conectado con el territorio. Cada recurso que publicamos ha sido creado o seleccionado con criterio pedagógico y respeto por nuestra tierra.</p>
+
+        <h2>Qué encontrarás aquí</h2>
+        <p>Recopilamos recursos educativos de diversos tipos —imágenes, vídeos, fichas de actividades, canciones, presentaciones y PDFs— organizados por isla, por nivel educativo, por área curricular y por temática. Todo el contenido está disponible de forma gratuita para que puedas usarlo en tus clases.</p>
+        <p>Además, publicamos artículos, novedades y noticias de la Consejería de Educación relacionadas con la enseñanza en Canarias.</p>
+
+        <h2>Criterios de selección</h2>
+        <p>Los recursos que forman parte de este catálogo cumplen al menos uno de estos criterios:</p>
+        <ul>
+          <li>Están directamente vinculados con Canarias (geografía, historia, cultura, naturaleza, arte, literatura, etc.).</li>
+          <li>Han sido elaborados por docentes canarios o por instituciones educativas del archipiélago.</li>
+          <li>Son aplicables al currículo de Canarias en Educación Infantil, Primaria, Secundaria o Bachillerato.</li>
+          <li>Tienen una calidad pedagógica contrastada y son adecuados para el aula.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="home-section" id="contacto" aria-labelledby="contact-title">
+      <h2 id="contact-title">Colabora con nosotras</h2>
+      <p>Si tienes recursos que quieras compartir, propuestas de mejora, has encontrado algún error o simplemente quieres ponerte en contacto, estaremos encantadas de leerte.</p>
+
+      <form class="contact-form" id="contact-form" novalidate>
+        <div class="form-group">
+          <label for="contact-name">Nombre</label>
+          <input type="text" id="contact-name" name="name" maxlength="200" required
+                 autocomplete="name" placeholder="Tu nombre">
+        </div>
+
+        <div class="form-group">
+          <label for="contact-email">Correo electrónico</label>
+          <input type="email" id="contact-email" name="email" required
+                 autocomplete="email" placeholder="tu@correo.es">
+        </div>
+
+        <div class="form-group">
+          <label for="contact-type">Motivo</label>
+          <select id="contact-type" name="type" required>
+            <option value="">Selecciona un motivo...</option>
+            <option value="colaboracion">Colaboración</option>
+            <option value="sugerencia">Sugerencia</option>
+            <option value="error">Informar de un error</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="contact-message">Mensaje</label>
+          <textarea id="contact-message" name="message" rows="6" minlength="10" maxlength="5000"
+                    required placeholder="Cuéntanos... (mín. 10 caracteres)"></textarea>
+        </div>
+
+        <p class="form-legal">Al enviar este formulario aceptas que tratemos tus datos para atender tu consulta. Consulta nuestra <a href="/legal/privacidad">política de privacidad</a>.</p>
+        <button type="submit" class="contact-submit">Enviar mensaje</button>
+      </form>
+      <p class="contact-feedback" id="contact-msg" aria-live="polite" hidden></p>
+    </section>
+
+  </main>
+
+{{>footer}}
+<script src="/js/contact.js" defer></script>
+</body>
+</html>

@@ -33,11 +33,13 @@ router.get("/api/resources/filtered", async (req, res) => {
     return;
   }
 
+  const rawHasFile = p.get("hasFile");
   const args = {
     limit:  Math.min(Math.max(1, parseInt(p.get("limit") || "24", 10)), 100),
     cursor: p.get("cursor")  || undefined,
     q:      p.get("q")       || undefined,
     kind:   rawKind          || undefined,
+    hasFile: rawHasFile === "1" || rawHasFile === "true" ? true : undefined,
   };
 
   const islands = p.getAll("islands").filter(Boolean);
@@ -198,5 +200,25 @@ router.post("/api/admin/resources/:id/refresh-og", async (req, res) => {
     sendJson(res, status, { error: err.message || "No se pudo encolar el refresco." });
   }
 });
+
+// GET /api/resources/:id/download — redirige al fileUrl y registra la descarga
+router.get("/api/resources/:id/download", async (req, res) => {
+  const id = req.params?.id;
+  if (!id) { sendJson(res, 400, { error: "Falta id" }); return; }
+  try {
+    const resource = await _convex.query(_api.resources.getById, { id });
+    if (!resource) { sendJson(res, 404, { error: "Recurso no encontrado" }); return; }
+    if (!resource.fileUrl) { sendJson(res, 404, { error: "Este recurso no tiene archivo descargable" }); return; }
+
+    // Fire-and-forget download counter (no bloquea la redirección)
+    _convex.mutation(_api.resources.recordDownload, { id }).catch(() => {});
+
+    res.writeHead(302, { Location: resource.fileUrl });
+    res.end();
+  } catch (err) {
+    const status = err.status || 500;
+    sendJson(res, status, { error: err.message || "Error al procesar la descarga." });
+  }
+}, { public: true });
 
 module.exports = { init };

@@ -114,10 +114,12 @@ async function loadList({ reset = false } = {}) {
     state.items.push(...(data.items || []));
     state.cursor = data.nextCursor || null;
     renderRows();
+    setHidden(els.btnMore, !state.cursor);
     if (typeof data.total === "number") {
       els.count.textContent = `${data.total} post${data.total === 1 ? "" : "s"}`;
+    } else {
+      els.count.textContent = "";
     }
-    setHidden(els.btnMore, !state.cursor);
   } catch (e) {
     showError(els.listError, e.message);
   }

@@ -57,8 +57,8 @@ function makeStub({ posts = {} } = {}) {
         calls.listAdmin.push(args);
         return {
           items: Object.values(posts),
-          nextCursor: null,
-          total: Object.keys(posts).length,
+          continueCursor: null,
+          isDone: true,
         };
       }
       if (fn === "blog.getById") {
@@ -332,6 +332,123 @@ test("preview-markdown rechaza markdown > MAX → 400", async () => {
   const res = mockRes();
   await dispatch(req, res);
   assert.equal(res._status, 400);
+});
+
+// ── Validación externalUrl ─────────────────────────────────────────────────
+
+test("POST /api/admin/blog rechaza externalUrl no segura (javascript:) → 400", async () => {
+  const stub = makeStub();
+  blogRoute.init(stub.convex, stub.api);
+  const req = adminReq("POST", "/api/admin/blog", {
+    body: {
+      title: "x", slug: "x", category: "articulo", excerpt: "x",
+      islands: ["todas"], externalUrl: "javascript:alert(1)",
+    },
+  });
+  const res = mockRes();
+  await dispatch(req, res);
+  assert.equal(res._status, 400);
+  assert.match(JSON.parse(res._body).error, /URL segura/i);
+});
+
+test("POST /api/admin/blog rechaza externalUrl no segura (data:) → 400", async () => {
+  const stub = makeStub();
+  blogRoute.init(stub.convex, stub.api);
+  const req = adminReq("POST", "/api/admin/blog", {
+    body: {
+      title: "x", slug: "x", category: "articulo", excerpt: "x",
+      islands: ["todas"], externalUrl: "data:text/html,<script>alert(1)</script>",
+    },
+  });
+  const res = mockRes();
+  await dispatch(req, res);
+  assert.equal(res._status, 400);
+});
+
+// ── Validación PATCH no vacía campos obligatorios ──────────────────────────
+
+test("PATCH /api/admin/blog/:id rechaza title vacío → 400", async () => {
+  const stub = makeStub({ posts: { "p1": { id: "p1", title: "viejo", slug: "x", category: "articulo", excerpt: "e", islands: ["todas"] } } });
+  blogRoute.init(stub.convex, stub.api);
+  const req = adminReq("PATCH", "/api/admin/blog/p1", { body: { title: "" } });
+  const res = mockRes();
+  await dispatch(req, res);
+  assert.equal(res._status, 400);
+});
+
+test("PATCH /api/admin/blog/:id rechaza slug vacío → 400", async () => {
+  const stub = makeStub({ posts: { "p1": { id: "p1", title: "x", slug: "x", category: "articulo", excerpt: "e", islands: ["todas"] } } });
+  blogRoute.init(stub.convex, stub.api);
+  const req = adminReq("PATCH", "/api/admin/blog/p1", { body: { slug: "" } });
+  const res = mockRes();
+  await dispatch(req, res);
+  assert.equal(res._status, 400);
+});
+
+test("PATCH /api/admin/blog/:id rechaza islands vacío → 400", async () => {
+  const stub = makeStub({ posts: { "p1": { id: "p1", title: "x", slug: "x", category: "articulo", excerpt: "e", islands: ["todas"] } } });
+  blogRoute.init(stub.convex, stub.api);
+  const req = adminReq("PATCH", "/api/admin/blog/p1", { body: { islands: [] } });
+  const res = mockRes();
+  await dispatch(req, res);
+  assert.equal(res._status, 400);
+});
+
+test("PATCH /api/admin/blog/:id rechaza externalUrl no segura → 400", async () => {
+  const stub = makeStub({ posts: { "p1": { id: "p1", title: "x", slug: "x", category: "articulo", excerpt: "e", islands: ["todas"] } } });
+  blogRoute.init(stub.convex, stub.api);
+  const req = adminReq("PATCH", "/api/admin/blog/p1", { body: { externalUrl: "javascript:void(0)" } });
+  const res = mockRes();
+  await dispatch(req, res);
+  assert.equal(res._status, 400);
+});
+
+// ── deployKey en mutations admin ──────────────────────────────────────────
+
+test("POST pasa deployKey a la mutation", async () => {
+  const stub = makeStub();
+  blogRoute.init(stub.convex, stub.api);
+  process.env.CONVEX_DEPLOY_KEY = "dk-test";
+  const req = adminReq("POST", "/api/admin/blog", {
+    body: {
+      title: "x", slug: "x", category: "articulo", excerpt: "x",
+      islands: ["todas"],
+    },
+  });
+  const res = mockRes();
+  await dispatch(req, res);
+  assert.equal(res._status, 201);
+  const sent = stub.calls.create.at(-1);
+  assert.equal(sent.deployKey, "dk-test");
+  delete process.env.CONVEX_DEPLOY_KEY;
+});
+
+test("PATCH pasa deployKey y el body no lo sobreescribe", async () => {
+  const stub = makeStub({ posts: { "p1": { id: "p1", title: "x", slug: "x", category: "articulo", excerpt: "e", islands: ["todas"] } } });
+  blogRoute.init(stub.convex, stub.api);
+  process.env.CONVEX_DEPLOY_KEY = "dk-real";
+  const req = adminReq("PATCH", "/api/admin/blog/p1", {
+    body: { title: "nuevo", deployKey: "dk-malicioso" },
+  });
+  const res = mockRes();
+  await dispatch(req, res);
+  assert.equal(res._status, 200);
+  const sent = stub.calls.update.at(-1);
+  assert.equal(sent.deployKey, "dk-real");
+  delete process.env.CONVEX_DEPLOY_KEY;
+});
+
+test("DELETE pasa deployKey a la mutation", async () => {
+  const stub = makeStub({ posts: { "p1": { id: "p1", title: "x" } } });
+  blogRoute.init(stub.convex, stub.api);
+  process.env.CONVEX_DEPLOY_KEY = "dk-test";
+  const req = adminReq("DELETE", "/api/admin/blog/p1");
+  const res = mockRes();
+  await dispatch(req, res);
+  assert.equal(res._status, 200);
+  const sent = stub.calls.remove.at(-1);
+  assert.equal(sent.deployKey, "dk-test");
+  delete process.env.CONVEX_DEPLOY_KEY;
 });
 
 // ── Upload cover ──────────────────────────────────────────────────────────

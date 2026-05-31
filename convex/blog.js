@@ -1,4 +1,5 @@
 import { query, mutation } from "./_generated/server";
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 
 const CATEGORY_VALUES = v.union(
@@ -30,6 +31,21 @@ function toApi(doc) {
 function computeReadingMinutes(body) {
   const words = String(body || "").trim().split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.round(words / 200));
+}
+
+function isValidExternalUrl(url) {
+  if (!url) return true;
+  try {
+    const p = new URL(url);
+    return p.protocol === "http:" || p.protocol === "https:";
+  } catch { return false; }
+}
+
+function requireDeployKey(deployKey) {
+  const expected = process.env.CONVEX_DEPLOY_KEY;
+  if (!expected || deployKey !== expected) {
+    throw new Error("No autorizado");
+  }
 }
 
 // ─── Queries públicas ───────────────────────────────────────────────────────
@@ -71,37 +87,17 @@ export const getById = query({
 
 // ─── Admin listing con cursor + búsqueda ────────────────────────────────────
 
-function encodeCursor(doc) {
-  const json = JSON.stringify({ ct: doc._creationTime, id: doc._id });
-  return btoa(json).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-
-function decodeCursor(cursor) {
-  if (!cursor) return null;
-  try {
-    const base64 = cursor.replace(/-/g, "+").replace(/_/g, "/");
-    const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
-    return JSON.parse(atob(padded));
-  } catch {
-    return null;
-  }
-}
-
 export const listAdmin = query({
   args: {
-    q:        v.optional(v.string()),
-    category: v.optional(CATEGORY_VALUES),
-    cursor:   v.optional(v.string()),
-    limit:    v.optional(v.number()),
+    paginationOpts: paginationOptsValidator,
+    q:              v.optional(v.string()),
+    category:       v.optional(CATEGORY_VALUES),
   },
   handler: async (ctx, args) => {
-    const limit     = Math.min(Math.max(1, args.limit ?? 20), 100);
     const hasSearch = Boolean(args.q?.trim());
-    const parsed    = hasSearch ? null : decodeCursor(args.cursor ?? null);
 
-    let docs;
     if (hasSearch) {
-      docs = await ctx.db
+      const docs = await ctx.db
         .query("blogPosts")
         .withSearchIndex("search_posts_title", (b) => {
           let q = b.search("title", args.q);
@@ -109,34 +105,24 @@ export const listAdmin = query({
           return q;
         })
         .collect();
+      return { items: docs.map(toApi), continueCursor: null, isDone: true };
+    }
+
+    let q;
+    if (args.category) {
+      q = ctx.db.query("blogPosts")
+        .withIndex("by_category_published", (b) => b.eq("category", args.category))
+        .order("desc");
     } else {
-      docs = await ctx.db.query("blogPosts").order("desc").collect();
-      if (args.category) docs = docs.filter((d) => d.category === args.category);
+      q = ctx.db.query("blogPosts").order("desc");
     }
 
-    if (!hasSearch) {
-      docs.sort((a, b) =>
-        b._creationTime !== a._creationTime
-          ? b._creationTime - a._creationTime
-          : a._id < b._id ? -1 : 1
-      );
-    }
-    const total = docs.length;
-
-    if (parsed) {
-      const idx = docs.findIndex(
-        (d) => d._creationTime < parsed.ct ||
-              (d._creationTime === parsed.ct && d._id > parsed.id)
-      );
-      docs = idx === -1 ? [] : docs.slice(idx);
-    }
-
-    const page       = docs.slice(0, limit);
-    const nextCursor = (!hasSearch && docs.length > limit)
-      ? encodeCursor(page[page.length - 1])
-      : null;
-
-    return { items: page.map(toApi), nextCursor, total };
+    const result = await q.paginate(args.paginationOpts);
+    return {
+      items: result.page.map(toApi),
+      continueCursor: result.continueCursor,
+      isDone: result.isDone,
+    };
   },
 });
 
@@ -144,6 +130,7 @@ export const listAdmin = query({
 
 export const create = mutation({
   args: {
+    deployKey:   v.string(),
     title:       v.string(),
     slug:        v.string(),
     category:    CATEGORY_VALUES,
@@ -156,6 +143,7 @@ export const create = mutation({
     publishedAt: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    requireDeployKey(args.deployKey);
     const slug = args.slug.trim();
     const dup  = await ctx.db
       .query("blogPosts")
@@ -166,6 +154,10 @@ export const create = mutation({
     const body            = args.body ?? "";
     const readingMinutes  = computeReadingMinutes(body);
     const externalUrlNorm = (args.externalUrl ?? "").trim();
+
+    if (externalUrlNorm && !isValidExternalUrl(externalUrlNorm)) {
+      throw new Error("externalUrl no es una URL segura");
+    }
 
     const insert = {
       title:          args.title.trim(),
@@ -190,6 +182,7 @@ export const create = mutation({
 
 export const update = mutation({
   args: {
+    deployKey:   v.string(),
     id:          v.id("blogPosts"),
     title:       v.optional(v.string()),
     slug:        v.optional(v.string()),
@@ -203,7 +196,8 @@ export const update = mutation({
     publishedAt: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const { id, ...rest } = args;
+    requireDeployKey(args.deployKey);
+    const { id, deployKey: _, ...rest } = args;
     const current = await ctx.db.get(id);
     if (!current) throw new Error("Post no encontrado");
 
@@ -221,6 +215,17 @@ export const update = mutation({
       if (typeof rest[k] === "string") rest[k] = rest[k].trim();
     }
 
+    if (rest.externalUrl && !isValidExternalUrl(rest.externalUrl)) {
+      throw new Error("externalUrl no es una URL segura");
+    }
+
+    if (rest.title !== undefined && !rest.title) throw new Error("title no puede estar vacío");
+    if (rest.slug !== undefined && !rest.slug) throw new Error("slug no puede estar vacío");
+    if (rest.excerpt !== undefined && !rest.excerpt) throw new Error("excerpt no puede estar vacío");
+    if (rest.islands !== undefined && rest.islands.length === 0) {
+      throw new Error("islands no puede estar vacío");
+    }
+
     if (rest.body !== undefined) {
       rest.readingMinutes = computeReadingMinutes(rest.body);
     }
@@ -232,8 +237,9 @@ export const update = mutation({
 });
 
 export const remove = mutation({
-  args: { id: v.id("blogPosts") },
-  handler: async (ctx, { id }) => {
+  args: { deployKey: v.string(), id: v.id("blogPosts") },
+  handler: async (ctx, { deployKey, id }) => {
+    requireDeployKey(deployKey);
     await ctx.db.delete(id);
     return { deleted: id };
   },

@@ -226,20 +226,20 @@ test("XEI-48: scripts/seed.js y scripts/create-admin.js usan api-node.js, no api
 
 // ── XEI-49: renderPage convierte ENOENT en 404 ───────────────────────────
 
-test("XEI-49: ruta /descargas sin template → 404, no 500", async () => {
+test("XEI-49: ruta /descargas devuelve 200 con template", async () => {
   const req = mockReq("GET", "/descargas");
   const res = mockRes();
   const handled = await dispatch(req, res);
   assert.equal(handled, true);
-  assert.equal(res._status, 404, "debe devolver 404, no 500");
+  assert.equal(res._status, 200);
 });
 
-test("XEI-49: ruta /noticias sin template → 404, no 500", async () => {
+test("XEI-49: ruta /noticias devuelve 200 con template", async () => {
   const req = mockReq("GET", "/noticias");
   const res = mockRes();
   const handled = await dispatch(req, res);
   assert.equal(handled, true);
-  assert.equal(res._status, 404);
+  assert.equal(res._status, 200);
 });
 
 test("XEI-49: ruta /acerca debe devolver 200 con formulario de contacto", async () => {

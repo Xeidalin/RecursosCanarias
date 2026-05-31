@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+{{>head}}
+<body>
+{{>header}}
+
+  <main>
+
+    <!-- ── Hero de isla ─────────────────────────────────────────── -->
+    <section class="island-hero" aria-labelledby="island-title">
+      <div class="island-hero__inner">
+        <nav class="breadcrumb" aria-label="Navegación de migas de pan">
+          <a href="/">Inicio</a>
+          <span aria-hidden="true">›</span>
+          <a href="/recursos">Recursos</a>
+          <span aria-hidden="true">›</span>
+          <span aria-current="page">{{islandName}}</span>
+        </nav>
+        <h1 id="island-title">{{islandName}}</h1>
+        <p class="island-hero__intro">{{islandIntro}}</p>
+      </div>
+    </section>
+
+    <!-- ── Información sobre la isla ─────────────────────────────── -->
+    <section class="island-info" aria-label="Información sobre {{islandName}}">
+      <div class="island-info__inner">
+
+        <div class="island-info__card island-info__card--nature">
+          <h2>Naturaleza</h2>
+          <p>{{islandNature}}</p>
+        </div>
+
+        <div class="island-info__card island-info__card--culture">
+          <h2>Cultura y tradiciones</h2>
+          <p>{{islandCulture}}</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Recursos de la isla ────────────────────────────────────── -->
+    <section class="home-section" id="island-resources" aria-labelledby="island-resources-title">
+      <div class="panel-head">
+        <h2 id="island-resources-title">Recursos de {{islandName}}</h2>
+        <a href="/recursos?islands={{islandSlug}}">Ver todos →</a>
+      </div>
+      <div class="resource-cards home-resource-cards" id="island-resource-cards"
+           aria-live="polite" aria-busy="true">
+        <div class="resource-card skeleton" aria-hidden="true"></div>
+        <div class="resource-card skeleton" aria-hidden="true"></div>
+        <div class="resource-card skeleton" aria-hidden="true"></div>
+        <div class="resource-card skeleton" aria-hidden="true"></div>
+        <div class="resource-card skeleton" aria-hidden="true"></div>
+        <div class="resource-card skeleton" aria-hidden="true"></div>
+      </div>
+    </section>
+
+  </main>
+
+{{>footer}}
+<script>window.__ISLAND_SLUG__ = "{{islandSlug}}";</script>
+<script src="/js/isla.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+{{>head}}
+<body class="admin-page">
+  <div class="admin-layout">
+    {{>admin-sidebar}}
+    <main class="admin-content">
+      <div class="admin-content-header">
+        <h1>Mensajes de contacto</h1>
+        <p class="admin-content-subtitle">Bandeja de mensajes recibidos desde el formulario de contacto.</p>
+      </div>
+
+      <div class="admin-toolbar">
+        <p id="results-count" class="admin-results-count" aria-live="polite"></p>
+      </div>
+
+      <p id="list-error" class="admin-error-msg" hidden></p>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Email</th>
+              <th scope="col">Motivo</th>
+              <th scope="col">Mensaje</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Estado</th>
+              <th scope="col" class="admin-table-actions-col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <tr class="admin-table-empty"><td colspan="7">Cargando…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="admin-pagination">
+        <button id="btn-more" class="admin-secondary-btn" type="button" hidden>
+          Cargar más
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/admin.js" defer></script>
+  <script src="/js/admin-mensajes.js" defer></script>
+</body>
+</html>

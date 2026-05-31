@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+{{>head}}
+<body>
+{{>header}}
+
+<main class="descargas-page home-section">
+  <h1>Descargas</h1>
+  <p class="descargas-page__intro">Recursos educativos con archivos descargables. Filtra por tipo, isla, tema o nivel para encontrar lo que necesitas.</p>
+
+  <div class="descargas-filters" id="descargas-filters">
+    <select id="filter-kind" class="descargas-filter">
+      <option value="">Todos los tipos</option>
+      <option value="pdf">PDF</option>
+      <option value="image">Imagen</option>
+      <option value="audio">Audio</option>
+      <option value="video">Video</option>
+      <option value="presentation">Presentación</option>
+      <option value="activity">Actividad</option>
+    </select>
+    <select id="filter-island" class="descargas-filter">
+      <option value="">Todas las islas</option>
+      <option value="tenerife">Tenerife</option>
+      <option value="gran-canaria">Gran Canaria</option>
+      <option value="lanzarote">Lanzarote</option>
+      <option value="fuerteventura">Fuerteventura</option>
+      <option value="la-palma">La Palma</option>
+      <option value="la-gomera">La Gomera</option>
+      <option value="el-hierro">El Hierro</option>
+    </select>
+  </div>
+
+  <div class="descargas-grid" id="descargas-grid">
+    <!-- Cargadas por descargas.js -->
+  </div>
+
+  <div id="descargas-loading" class="descargas-loading" aria-live="polite">
+    Cargando recursos descargables...
+  </div>
+</main>
+
+{{>footer}}
+<script src="/js/descargas.js" defer></script>
+</body>
+</html>

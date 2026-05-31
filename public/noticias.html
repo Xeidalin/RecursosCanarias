@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es">
+{{>head}}
+<body>
+{{>header}}
+
+<main class="noticias-page home-section">
+  <h1>Noticias de la Consejería</h1>
+  <p class="noticias-page__intro">Novedades, convocatorias y comunicaciones oficiales de la Consejería de Educación de Canarias relacionadas con recursos educativos digitales.</p>
+
+  <div class="noticias-grid" id="noticias-grid">
+    <!-- Cargadas por noticias.js -->
+  </div>
+
+  <div id="noticias-loading" class="noticias-loading" aria-live="polite">
+    Cargando noticias...
+  </div>
+</main>
+
+{{>footer}}
+<script src="/js/noticias.js" defer></script>
+</body>
+</html>
